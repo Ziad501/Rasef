@@ -1,0 +1,182 @@
+﻿@page "/"
+@layout Rasef.Components.Layout.EmptyLayout
+@inject NavigationManager Nav
+
+<div class="position-relative min-vh-100 d-flex align-items-center justify-content-center overflow-hidden">
+    <!-- Background Image with Overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 1;">
+        <div class="position-absolute top-0 start-0 w-100 h-100"
+             style="background-image: url('/css/img/jeddah.jpg');
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;">
+        </div>
+        <div class="position-absolute top-0 start-0 w-100 h-100"
+             style="background: linear-gradient(135deg, rgba(44, 62, 80, 0.60) 0%, rgba(52, 73, 94, 0.85) 100%);">
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+                <!-- Login Card -->
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate-fade-in">
+                    <div class="card-body p-4 p-sm-5">
+                        <!-- Logo -->
+                        <div class="text-center mb-4">
+                            <div class="bg-white rounded-circle d-inline-flex p-3 shadow-sm mb-3">
+                                <img src="/css/img/logo.png"
+                                     alt="راصف"
+                                     class="img-fluid"
+                                     style="max-width: 150px; height: auto;" />
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <h2 class="text-center fw-bold mb-2" style="color: #2c3e50;">تسجيل الدخول</h2>
+                        <p class="text-center text-muted mb-4">نظام راصف - إدارة وصيانة شبكات الطرق</p>
+
+                        <!-- Login Button -->
+                        <div class="d-grid gap-3 mb-3">
+                            <button class="btn btn-lg py-3 rounded-3 fw-bold text-white border-0 btn-hover-effect"
+                                    style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);"
+                                    @onclick="OnLoginClick">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-shield-check me-2" viewBox="0 0 16 16">
+                                    <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
+                                    <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                                </svg>
+                                تسجيل الدخول عبر النفاذ الوطني
+                            </button>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="d-flex align-items-center my-4">
+                            <hr class="flex-grow-1 opacity-25" />
+                            <span class="px-3 text-muted small">أو</span>
+                            <hr class="flex-grow-1 opacity-25" />
+                        </div>
+
+                        <!-- Exit Button -->
+                        <div class="d-grid">
+                            <button class="btn btn-outline-danger btn-lg py-3 rounded-3 fw-bold btn-hover-effect"
+                                    @onclick="Exit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right me-2" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+                                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                                </svg>
+                                الخروج من الخدمة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="text-center mt-4 animate-fade-in-delay">
+                    <p class="text-white-50 small mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-c-circle me-1" viewBox="0 0 16 16">
+                            <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8Zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM8.146 4.992c-1.212 0-1.927.92-1.927 2.502v1.06c0 1.571.703 2.462 1.927 2.462.979 0 1.641-.586 1.729-1.418h1.295v.093c-.1 1.448-1.354 2.467-3.03 2.467-2.091 0-3.269-1.336-3.269-3.603V7.482c0-2.261 1.201-3.638 3.27-3.638 1.681 0 2.935 1.054 3.029 2.572v.088H9.875c-.088-.879-.768-1.512-1.729-1.512Z" />
+                        </svg>
+                        @DateTime.Now.Year وزارة النقل والخدمات اللوجستية
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decorative Elements -->
+    <div class="position-absolute bottom-0 start-0 w-100" style="z-index: 1;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" style="display: block;">
+            <path fill="rgba(255, 255, 255, 0.05)" fill-opacity="1" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>
+        </svg>
+    </div>
+</div>
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeInDelay {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .animate-fade-in-delay {
+        animation: fadeInDelay 1s ease-out 0.3s both;
+    }
+
+    .btn-hover-effect {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-hover-effect::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-hover-effect:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-hover-effect:active {
+            transform: translateY(0);
+        }
+
+    .card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.98);
+    }
+
+    .bg-white {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .bg-white {
+        transform: scale(1.05);
+    }
+</style>
+
+@code {
+    private void OnLoginClick() => Nav.NavigateTo("/home");
+
+    private void Exit()
+    {
+#if ANDROID || IOS || MACCATALYST || WINDOWS
+        Application.Current?.Quit();
+#endif
+    }
+}
