@@ -1,0 +1,405 @@
+﻿@page "/workorder/workflow"
+@layout MainLayout
+
+@code {
+    [CascadingParameter] public string CurrentLanguage { get; set; } = "AR";
+    private string search = "";
+    private string status = "all";
+    private string municipality = "all";
+
+    private int currentPage = 1;
+    private int pageSize = 10;
+    private int[] pageSizeOptions = { 5, 10, 20, 50, 100 };
+
+    private record Row(int Id, string Number, string Type, string Municipality, string Street, string Status, int Stage, DateTime Created);
+    private readonly List<Row> data = new()
+    {
+        new(1,"WO-2025-001","Normal","جدة / Jeddah","شارع الأمير محمد بن عبدالعزيز","PendingReview",1,new DateTime(2025,1,20)),
+        new(2,"WO-2025-002","ExceptionEmergency","مكة / Mecca","طريق الملك عبدالعزيز","InProgress",6,new DateTime(2025,1,18)),
+        new(3,"WO-2025-003","ExceptionPriority","جدة / Jeddah","شارع التحلية","Approved",3,new DateTime(2025,1,22)),
+        new(4,"WO-2025-004","Normal","الرياض / Riyadh","شارع العليا","Completed",7,new DateTime(2025,1,15)),
+        new(5,"WO-2025-005","Normal","جدة / Jeddah","شارع فلسطين","PendingReview",2,new DateTime(2025,1,19)),
+        new(6,"WO-2025-006","ExceptionPriority","مكة / Mecca","شارع الحج","InProgress",4,new DateTime(2025,1,17)),
+        new(7,"WO-2025-007","Normal","الرياض / Riyadh","طريق الملك فهد","Approved",3,new DateTime(2025,1,21)),
+        new(8,"WO-2025-008","ExceptionEmergency","جدة / Jeddah","شارع الأندلس","Rejected",2,new DateTime(2025,1,16)),
+        new(9,"WO-2025-009","Normal","مكة / Mecca","طريق المدينة","Completed",7,new DateTime(2025,1,14)),
+        new(10,"WO-2025-010","Normal","الرياض / Riyadh","شارع العروبة","InProgress",5,new DateTime(2025,1,23)),
+        new(11,"WO-2025-011","ExceptionPriority","جدة / Jeddah","شارع الروضة","PendingReview",1,new DateTime(2025,1,24)),
+        new(12,"WO-2025-012","Normal","مكة / Mecca","شارع العزيزية","Approved",4,new DateTime(2025,1,13)),
+    };
+
+    private readonly Dictionary<string, Dictionary<string, string>> t = new()
+    {
+        ["AR"] = new()
+        {
+            ["workOrderTracking"] = "تتبع أوامر العمل",
+            ["trackingSubtitle"] = "إدارة ومتابعة جميع أوامر العمل",
+            ["createWorkOrder"] = "إنشاء أمر عمل",
+            ["search"] = "بحث",
+            ["searchPlaceholder"] = "بحث برقم الامر أو الشارع",
+            ["filterStatus"] = "الحالة",
+            ["filterMunicipality"] = "البلدية",
+            ["all"] = "الكل",
+            ["workOrderNumber"] = "رقم امر العمل",
+            ["type"] = "النوع",
+            ["status"] = "الحالة",
+            ["municipality"] = "البلدية",
+            ["street"] = "الشارع",
+            ["createdDate"] = "تاريخ الإنشاء",
+            ["currentStage"] = "المرحلة الحالية",
+            ["actions"] = "الإجراءات",
+            ["viewDetails"] = "التفاصيل",
+            ["showing"] = "عرض",
+            ["to"] = "إلى",
+            ["of"] = "من",
+            ["results"] = "نتيجة",
+            ["noResults"] = "لا توجد نتائج",
+            ["itemsPerPage"] = "عدد العناصر في الصفحة",
+            ["page"] = "صفحة",
+            ["previous"] = "السابق",
+            ["next"] = "التالي",
+            ["PendingReview"] = "قيد المراجعة",
+            ["Approved"] = "معتمد",
+            ["Rejected"] = "مرفوض",
+            ["InProgress"] = "قيد التنفيذ",
+            ["Completed"] = "مكتمل",
+            ["Normal"] = "عادي",
+            ["ExceptionPriority"] = "استثناء أولوية",
+            ["ExceptionEmergency"] = "استثناء طارئ",
+            ["edit"] = "تعديل"
+        },
+        ["EN"] = new()
+        {
+            ["workOrderTracking"] = "Work Order Tracking",
+            ["trackingSubtitle"] = "Manage and monitor all work orders",
+            ["createWorkOrder"] = "Create Work Order",
+            ["search"] = "Search",
+            ["searchPlaceholder"] = "Search by number or street",
+            ["filterStatus"] = "Status",
+            ["filterMunicipality"] = "Municipality",
+            ["all"] = "All",
+            ["workOrderNumber"] = "Work Order #",
+            ["type"] = "Type",
+            ["status"] = "Status",
+            ["municipality"] = "Municipality",
+            ["street"] = "Street",
+            ["createdDate"] = "Created Date",
+            ["currentStage"] = "Current Stage",
+            ["actions"] = "Actions",
+            ["viewDetails"] = "Details",
+            ["showing"] = "Showing",
+            ["to"] = "to",
+            ["of"] = "of",
+            ["results"] = "results",
+            ["noResults"] = "No results found",
+            ["itemsPerPage"] = "Items per page",
+            ["page"] = "Page",
+            ["previous"] = "Previous",
+            ["next"] = "Next",
+            ["PendingReview"] = "Pending Review",
+            ["Approved"] = "Approved",
+            ["Rejected"] = "Rejected",
+            ["InProgress"] = "In Progress",
+            ["Completed"] = "Completed",
+            ["Normal"] = "Normal",
+            ["ExceptionPriority"] = "Exception Priority",
+            ["ExceptionEmergency"] = "Exception Emergency",
+            ["edit"] = "Edit"
+        }
+    };
+
+    string T(string k) => t[CurrentLanguage].TryGetValue(k, out var v) ? v : k;
+
+    IEnumerable<Row> Filtered() => data
+        .Where(r => string.IsNullOrWhiteSpace(search) || r.Number.Contains(search, StringComparison.OrdinalIgnoreCase) || r.Street.Contains(search, StringComparison.OrdinalIgnoreCase))
+        .Where(r => status == "all" || r.Status == status)
+        .Where(r => municipality == "all" || r.Municipality == municipality);
+
+    IEnumerable<Row> Paginated()
+    {
+        var filtered = Filtered();
+        return filtered.Skip((currentPage - 1) * pageSize).Take(pageSize);
+    }
+
+    int TotalPages() => (int)Math.Ceiling(Filtered().Count() / (double)pageSize);
+    int TotalItems() => Filtered().Count();
+    int StartItem() => TotalItems() == 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    int EndItem() { var end = currentPage * pageSize; var total = TotalItems(); return end > total ? total : end; }
+    void GoToPage(int page) { if (page >= 1 && page <= TotalPages()) currentPage = page; }
+    void ChangePageSize(int newSize) { pageSize = newSize; currentPage = 1; }
+    void OnSearchChanged() { currentPage = 1; }
+
+    private static string TypeBadge(string type) => type switch
+    {
+        "Normal" => "bg-primary",
+        "ExceptionPriority" => "bg-warning text-dark",
+        "ExceptionEmergency" => "bg-danger",
+        _ => "bg-secondary"
+    };
+    private static string StatusBadge(string status) => status switch
+    {
+        "PendingReview" => "bg-warning text-dark",
+        "Approved" => "bg-success",
+        "Rejected" => "bg-danger",
+        "InProgress" => "bg-info text-dark",
+        "Completed" => "bg-secondary",
+        _ => "bg-secondary"
+    };
+    private static string StatusIcon(string status) => status switch
+    {
+        "PendingReview" => "bi-clock",
+        "Approved" => "bi-check-circle",
+        "Rejected" => "bi-x-circle",
+        "InProgress" => "bi-arrow-repeat",
+        "Completed" => "bi-check2-all",
+        _ => "bi-circle"
+    };
+}
+
+<div>
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <h3 class="m-0 fw-bold">@T("workOrderTracking")</h3>
+            <p class="text-muted small mb-0">@T("trackingSubtitle")</p>
+        </div>
+        <a href="/workorder/create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i> @T("createWorkOrder")
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label small fw-semibold text-muted">@T("search")</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+                        <input class="form-control" placeholder='@T("searchPlaceholder")'
+                               @bind="search" @bind:event="oninput" @bind:after="OnSearchChanged" />
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label small fw-semibold text-muted">@T("filterStatus")</label>
+                    <select class="form-select" @bind="status" @bind:after="OnSearchChanged">
+                        <option value="all">@T("all")</option>
+                        <option value="PendingReview">@T("PendingReview")</option>
+                        <option value="Approved">@T("Approved")</option>
+                        <option value="Rejected">@T("Rejected")</option>
+                        <option value="InProgress">@T("InProgress")</option>
+                        <option value="Completed">@T("Completed")</option>
+                    </select>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label small fw-semibold text-muted">@T("filterMunicipality")</label>
+                    <select class="form-select" @bind="municipality" @bind:after="OnSearchChanged">
+                        <option value="all">@T("all")</option>
+                        <option>جدة / Jeddah</option>
+                        <option>مكة / Mecca</option>
+                        <option>الرياض / Riyadh</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results + page size -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <span class="text-muted small">
+            <i class="bi bi-list-check me-1"></i>
+            @T("showing") <strong>@StartItem()</strong> @T("to") <strong>@EndItem()</strong>
+            @T("of") <strong>@TotalItems()</strong> @T("results")
+        </span>
+        <div class="d-flex align-items-center gap-2">
+            <label class="text-muted small mb-0">@T("itemsPerPage"):</label>
+            <select class="form-select form-select-sm w-auto"
+                    @onchange="e => ChangePageSize(int.Parse(e.Value!.ToString()!))">
+                @foreach (var size in pageSizeOptions)
+                {
+                    <option value="@size" selected="@(size == pageSize)">@size</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <!-- Desktop table -->
+    <div class="card shadow-sm mb-3">
+        <div class="table-responsive d-none d-xl-block">
+            <table class="table table-hover align-middle mb-0 workflow-table">
+                <thead class="table-light">
+                    <tr>
+                        <th class="fw-semibold text-nowrap">@T("workOrderNumber")</th>
+                        <th class="fw-semibold text-nowrap">@T("type")</th>
+                        <th class="fw-semibold text-nowrap">@T("municipality") / @T("street")</th>
+                        <th class="fw-semibold text-nowrap">@T("status")</th>
+                        <th class="fw-semibold text-nowrap">@T("currentStage")</th>
+                        <th class="fw-semibold text-nowrap">@T("createdDate")</th>
+                        <th class="fw-semibold text-center text-nowrap">@T("actions")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Paginated())
+                    {
+                        <tr>
+                            <td class="fw-semibold text-primary">@r.Number</td>
+                            <td><span class="badge @TypeBadge(r.Type)">@T(r.Type)</span></td>
+                            <td>
+                                <div class="small text-muted">@r.Municipality</div>
+                                <div class="text-truncate">@r.Street</div>
+                            </td>
+                            <td>
+                                <span class="badge @StatusBadge(r.Status)">
+                                    <i class="bi @StatusIcon(r.Status) me-1"></i> @T(r.Status)
+                                </span>
+                            </td>
+                            <td>
+                                <StageProgress CurrentStageIndex="@r.Stage" Lang="@CurrentLanguage" />
+                            </td>
+                            <td class="text-muted">
+                                <i class="bi bi-calendar3 me-1"></i> @r.Created.ToString("yyyy-MM-dd")
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                                    <a class="btn btn-outline-secondary" href="/workorder/edit/@r.Id">
+                                        <i class="bi bi-pencil-square me-1"></i> @T("edit")
+                                    </a>
+                                     <a class="btn btn-outline-primary" href="/workorder/details/@r.Id">
+                                        <i class="bi bi-eye me-1"></i> @T("viewDetails")
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                    @if (!Paginated().Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-1 opacity-50"></i>
+                                <p class="mt-2 mb-0">@T("noResults")</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile cards (Bootstrap card + grid only) -->
+        <div class="d-xl-none p-2">
+            @foreach (var r in Paginated())
+            {
+                <div class="card shadow-sm mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <span class="fw-semibold text-primary">@r.Number</span>
+                        <span class="badge @TypeBadge(r.Type)">@T(r.Type)</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 row-cols-1 row-cols-sm-2">
+                            <div class="col">
+                                <div class="fw-semibold small text-muted">@T("municipality") / @T("street")</div>
+                                <div class="small text-muted">@r.Municipality</div>
+                                <div class="fw-medium">@r.Street</div>
+                            </div>
+                            <div class="col">
+                                <div class="fw-semibold small text-muted">@T("status")</div>
+                                <span class="badge @StatusBadge(r.Status)">
+                                    <i class="bi @StatusIcon(r.Status) me-1"></i> @T(r.Status)
+                                </span>
+                            </div>
+                            <div class="col">
+                                <div class="fw-semibold small text-muted">@T("createdDate")</div>
+                                <div class="text-muted"><i class="bi bi-calendar3 me-1"></i> @r.Created.ToString("yyyy-MM-dd")</div>
+                            </div>
+                            <div class="col">
+                                <div class="fw-semibold small text-muted"> @T("actions")</div>
+                                <div class="d-grid gap-2">
+                                    <a class="btn btn-sm btn-outline-secondary" href="/workorder/edit/@r.Id">
+                                        <i class="bi bi-pencil-square me-1"></i> @T("edit")
+                                    </a>
+                                     <a class="btn btn-sm btn-outline-primary" href="/workorder/details/@r.Id">
+                                        <i class="bi bi-eye me-1"></i> @T("viewDetails")
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="fw-semibold small text-muted mb-2">@T("currentStage")</div>
+                                <StageProgress CurrentStageIndex="@r.Stage" Lang="@CurrentLanguage" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (!Paginated().Any())
+            {
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-inbox fs-1 opacity-50"></i>
+                    <p class="mt-2 mb-0">@T("noResults")</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (TotalPages() > 1)
+    {
+        <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0 gap-1">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : null)">
+                        <button class="page-link" @onclick="() => GoToPage(currentPage - 1)">
+                            <i class="bi bi-chevron-left"></i>
+                            <span class="d-none d-sm-inline ms-1">@T("previous")</span>
+                        </button>
+                    </li>
+
+                    @if (TotalPages() <= 7)
+                    {
+                        @for (int i = 1; i <= TotalPages(); i++)
+                        {
+                            var pageNum = i;
+                            <li class="page-item @(currentPage == pageNum ? "active" : null)">
+                                <button class="page-link" @onclick="() => GoToPage(pageNum)">@pageNum</button>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="page-item @(currentPage == 1 ? "active" : null)">
+                            <button class="page-link" @onclick="() => GoToPage(1)">1</button>
+                        </li>
+
+                        @if (currentPage > 3)
+                        {
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        }
+
+                        @for (int i = Math.Max(2, currentPage - 1); i <= Math.Min(TotalPages() - 1, currentPage + 1); i++)
+                        {
+                            var pageNum = i;
+                            <li class="page-item @(currentPage == pageNum ? "active" : null)">
+                                <button class="page-link" @onclick="() => GoToPage(pageNum)">@pageNum</button>
+                            </li>
+                        }
+
+                        @if (currentPage < TotalPages() - 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        }
+
+                        <li class="page-item @(currentPage == TotalPages() ? "active" : null)">
+                            <button class="page-link" @onclick="() => GoToPage(TotalPages())">@TotalPages()</button>
+                        </li>
+                    }
+
+                    <li class="page-item @(currentPage == TotalPages() ? "disabled" : null)">
+                        <button class="page-link" @onclick="() => GoToPage(currentPage + 1)">
+                            <span class="d-none d-sm-inline me-1">@T("next")</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>

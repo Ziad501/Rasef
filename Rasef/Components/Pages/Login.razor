@@ -12,7 +12,7 @@
                     background-repeat: no-repeat;">
         </div>
         <div class="position-absolute top-0 start-0 w-100 h-100"
-             style="background: linear-gradient(135deg, rgba(44, 62, 80, 0.60) 0%, rgba(52, 73, 94, 0.85) 100%);">
+             style="background: linear-gradient(135deg, rgba(44, 62, 80, 0.75) 0%, rgba(52, 73, 94, 0.90) 100%);">
         </div>
     </div>
 
@@ -21,51 +21,61 @@
         <div class="row justify-content-center">
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
                 <!-- Login Card -->
-                <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate-fade-in">
+                <div class="login-card animate-fade-in">
+                    <div class="card-glow"></div>
+
                     <div class="card-body p-4 p-sm-5">
                         <!-- Logo -->
                         <div class="text-center mb-4">
-                            <div class="bg-white rounded-circle d-inline-flex p-3 shadow-sm mb-3">
-                                <img src="/css/img/logo.png"
-                                     alt="راصف"
-                                     class="img-fluid"
-                                     style="max-width: 150px; height: auto;" />
+                            <div class="logo-wrapper">
+                                <div class="logo-circle">
+                                    <img src="/css/img/logo.png"
+                                         alt="راصف"
+                                         class="logo-img" />
+                                </div>
+                                <div class="logo-shine"></div>
                             </div>
                         </div>
 
                         <!-- Title -->
-                        <h2 class="text-center fw-bold mb-2" style="color: #2c3e50;">تسجيل الدخول</h2>
-                        <p class="text-center text-muted mb-4">نظام راصف - إدارة وصيانة شبكات الطرق</p>
+                        <div class="text-center mb-4">
+                            <h2 class="login-title mb-2">تسجيل الدخول</h2>
+                            <p class="login-subtitle">نظام راصف - إدارة وصيانة شبكات الطرق</p>
+                        </div>
 
                         <!-- Login Button -->
                         <div class="d-grid gap-3 mb-3">
-                            <button class="btn btn-lg py-3 rounded-3 fw-bold text-white border-0 btn-hover-effect"
-                                    style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);"
+                            <button class="btn-primary-custom btn-lg py-3 rounded-3 fw-bold border-0"
                                     @onclick="OnLoginClick">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-shield-check me-2" viewBox="0 0 16 16">
-                                    <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
-                                    <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
-                                </svg>
-                                تسجيل الدخول عبر النفاذ الوطني
+                                <span class="btn-content"> 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                                        <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
+                                        <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                                    </svg>
+                                     تسجيل الدخول عبر النفاذ الوطني  
+                                </span>
+                                <div class="btn-shimmer"></div>
                             </button>
                         </div>
 
                         <!-- Divider -->
-                        <div class="d-flex align-items-center my-4">
-                            <hr class="flex-grow-1 opacity-25" />
-                            <span class="px-3 text-muted small">أو</span>
-                            <hr class="flex-grow-1 opacity-25" />
+                        <div class="divider-wrapper">
+                            <div class="divider-line"></div>
+                            <span class="divider-text">أو</span>
+                            <div class="divider-line"></div>
                         </div>
 
                         <!-- Exit Button -->
                         <div class="d-grid">
-                            <button class="btn btn-outline-danger btn-lg py-3 rounded-3 fw-bold btn-hover-effect"
+                            <button class="btn-exit-custom btn-lg py-3 rounded-3 fw-bold"
                                     @onclick="Exit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right me-2" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
-                                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
-                                </svg>
-                                الخروج من الخدمة
+                                <span class="btn-content">
+                                    @* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+                                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                                    </svg> *@
+                                      الخروج من الخدمة
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -73,8 +83,8 @@
 
                 <!-- Footer -->
                 <div class="text-center mt-4 animate-fade-in-delay">
-                    <p class="text-white-50 small mb-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-c-circle me-1" viewBox="0 0 16 16">
+                    <p class="footer-text mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
                             <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8Zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM8.146 4.992c-1.212 0-1.927.92-1.927 2.502v1.06c0 1.571.703 2.462 1.927 2.462.979 0 1.641-.586 1.729-1.418h1.295v.093c-.1 1.448-1.354 2.467-3.03 2.467-2.091 0-3.269-1.336-3.269-3.603V7.482c0-2.261 1.201-3.638 3.27-3.638 1.681 0 2.935 1.054 3.029 2.572v.088H9.875c-.088-.879-.768-1.512-1.729-1.512Z" />
                         </svg>
                         @DateTime.Now.Year وزارة النقل والخدمات اللوجستية
@@ -90,18 +100,28 @@
             <path fill="rgba(255, 255, 255, 0.05)" fill-opacity="1" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>
         </svg>
     </div>
+
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 </div>
 
 <style>
+    /* Animations */
     @@keyframes fadeIn {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px) scale(0.95);
         }
 
         to {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
     }
 
@@ -115,58 +135,342 @@
         }
     }
 
-    .animate-fade-in {
-        animation: fadeIn 0.8s ease-out;
+    @@keyframes glow {
+        0%, 100% {
+            opacity: 0.5;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
     }
 
-    .animate-fade-in-delay {
-        animation: fadeInDelay 1s ease-out 0.3s both;
+    @@keyframes shimmer {
+        0% {
+            left: -100%;
+        }
+
+        100% {
+            left: 200%;
+        }
     }
 
-    .btn-hover-effect {
-        transition: all 0.3s ease;
+    @@keyframes shine {
+        0% {
+            transform: translateX(-100%) rotate(45deg);
+        }
+
+        100% {
+            transform: translateX(200%) rotate(45deg);
+        }
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    @@keyframes particle {
+        0% {
+            transform: translateY(0) translateX(0) scale(0);
+            opacity: 0;
+        }
+
+        50% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-100vh) translateX(100px) scale(1);
+            opacity: 0;
+        }
+    }
+
+    /* Card Styling */
+    .login-card {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card-glow {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(52, 152, 219, 0.15) 0%, transparent 70%);
+        animation: glow 4s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    /* Logo Styling */
+    .logo-wrapper {
+        position: relative;
+        display: inline-block;
+        animation: float 3s ease-in-out ;
+    }
+
+    .logo-circle {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+        border-radius: 50%;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(0, 0, 0, 0.05);
         position: relative;
         overflow: hidden;
     }
 
-        .btn-hover-effect::before {
+    .logo-img {
+        max-width: 150px;
+        height: auto;
+        display: block;
+        position: relative;
+        z-index: 2;
+    }
+
+    .logo-shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+        /* animation: shine 3s ease-in-out infinite; */
+    }
+
+    /* Title Styling */
+    .login-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+    }
+
+    .login-subtitle {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    /* Primary Button */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        border: none;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
+        }
+
+        .btn-primary-custom:active {
+            transform: translateY(-1px);
+        }
+
+    .btn-shimmer {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    .btn-primary-custom:hover .btn-shimmer {
+        animation: shimmer 1.5s infinite;
+    }
+
+    /* Exit Button */
+    .btn-exit-custom {
+        background: transparent;
+        color: #e74c3c;
+        border: 2px solid #e74c3c;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+        .btn-exit-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #e74c3c;
+            transition: left 0.4s ease;
+            z-index: 0;
+        }
+
+        .btn-exit-custom:hover::before {
+            left: 0;
+        }
+
+        .btn-exit-custom:hover {
+            color: white;
+            border-color: #e74c3c;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-exit-custom:active {
+            transform: translateY(-1px);
+        }
+
+    .btn-content {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Divider */
+    .divider-wrapper {
+        display: flex;
+        align-items: center;
+        margin: 2rem 0;
+    }
+
+    .divider-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+    }
+
+    .divider-text {
+        padding: 0 1.5rem;
+        color: #95a5a6;
+        font-size: 0.9rem;
+        font-weight: 600;
+        position: relative;
+    }
+
+        .divider-text::before,
+        .divider-text::after {
             content: '';
             position: absolute;
             top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            background: #bdc3c7;
+            transform: translateY(-50%);
         }
 
-        .btn-hover-effect:hover::before {
-            width: 400px;
-            height: 400px;
+        .divider-text::before {
+            left: 0;
         }
 
-        .btn-hover-effect:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        .divider-text::after {
+            right: 0;
         }
 
-        .btn-hover-effect:active {
-            transform: translateY(0);
-        }
-
-    .card {
-        backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.98);
+    /* Footer */
+    .footer-text {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .bg-white {
-        transition: transform 0.3s ease;
+    /* Animations */
+    .animate-fade-in {
+        animation: fadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .card:hover .bg-white {
-        transform: scale(1.05);
+    .animate-fade-in-delay {
+        animation: fadeInDelay 1s ease-out 0.4s both;
+    }
+
+    /* Floating Particles */
+    .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: particle 15s linear infinite;
+    }
+
+        .particle:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 12s;
+        }
+
+        .particle:nth-child(2) {
+            left: 30%;
+            animation-delay: 3s;
+            animation-duration: 15s;
+        }
+
+        .particle:nth-child(3) {
+            left: 50%;
+            animation-delay: 6s;
+            animation-duration: 18s;
+        }
+
+        .particle:nth-child(4) {
+            left: 70%;
+            animation-delay: 9s;
+            animation-duration: 14s;
+        }
+
+        .particle:nth-child(5) {
+            left: 90%;
+            animation-delay: 12s;
+            animation-duration: 16s;
+        }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .login-card {
+            border-radius: 20px;
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+        }
+
+        .logo-img {
+            max-width: 120px;
+        }
+
+        .logo-circle {
+            padding: 1.25rem;
+        }
     }
 </style>
 

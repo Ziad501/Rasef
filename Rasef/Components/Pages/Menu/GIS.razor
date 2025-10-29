@@ -3,11 +3,10 @@
 
 <div class="min-vh-100 d-flex flex-column">
     <!-- Topbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm"
-         style="background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm gis-topbar">
         <div class="container-fluid px-3">
             <a class="navbar-brand d-flex align-items-center" href="/menu">
-                <div class="logo-container rounded-circle p-2 bg-white">
+                <div class="logo-container rounded-circle p-2">
                     <img src="/css/img/logo.png" alt="راصف" height="32" />
                 </div>
             </a>
@@ -22,6 +21,7 @@
             </div>
         </div>
     </nav>
+
 
     <!-- Map area -->
     <div class="gis-wrapper position-relative flex-grow-1">
@@ -83,17 +83,29 @@
         xmin: 38.95, ymin: 21.30, xmax: 39.55, ymax: 21.75, spatialReference: 4326
       });
 
-          const view = new MapView({
+    const view = new MapView({
       container: "mapView",
       map,
       center: [39.197, 21.543],
       zoom: 11,
       ui: { components: [] },
-      constraints: {
-        rotationEnabled: true,   // keep compass working
-        // optional: snapToZoom: false, minZoom: 2
-      },
-      padding: { top: 70 }
+      constraints: { rotationEnabled: true },
+      padding: { top: 0 } // <- no hard-coded number
+    });
+
+    // compute navbar height and apply to map + CSS var
+    function applyTopPadding(){
+      const nav = document.querySelector('.gis-topbar');
+      const h = nav ? nav.offsetHeight : 64;
+      // update esri view padding so widgets don’t hide under the bar
+      view.padding = { top: h, left: 0, right: 0, bottom: 0 };
+      // update CSS var so the map element height fits the viewport
+      document.documentElement.style.setProperty('--gis-nav-h', `${h}px`);
+    }
+
+    view.when(() => {
+      applyTopPadding();
+      window.addEventListener('resize', applyTopPadding);
     });
 
       // Left-side built-in widgets
@@ -370,5 +382,65 @@
             border-radius: 10px;
         }
         }
-}
+    /* --- Solid dark GIS navbar (no white strip) --- */
+    .gis-topbar {
+        background: linear-gradient(135deg,#34495e 0%,#2c3e50 100%) !important;
+        border: 0;
+        border-bottom: 3px solid rgba(0,0,0,.35); /* the dark line you want */
+        box-shadow: none !important;
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        min-height: 64px; /* fallback; JS will set exact height */
+    }
+
+        /* keep toggler icon visible on dark bg */
+        .gis-topbar .navbar-toggler {
+            border: 0;
+        }
+
+        .gis-topbar .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,.95)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* nav buttons: transparent, no milky pill */
+        .gis-topbar .nav-btn {
+            color: #fff;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: .5rem;
+            transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
+        }
+
+            .gis-topbar .nav-btn:hover,
+            .gis-topbar .nav-btn.active {
+                background: rgba(255,255,255,.12);
+                border-color: rgba(255,255,255,.45);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0,0,0,.25);
+            }
+
+        /* remove the white halo behind the logo */
+        .gis-topbar .logo-container {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+    /* map height uses the real navbar height; JS will set this var */
+    :root {
+        --gis-nav-h: 64px;
+    }
+
+    .gis-map {
+        height: calc(100vh - var(--gis-nav-h));
+    }
+
+    /* mobile fallback */
+    @@media (max-width:576px) {
+        .gis-topbar {
+            min-height: 56px;
+        }
+    }
+
+    }}
 </style>

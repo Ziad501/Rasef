@@ -1,17 +1,29 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<CascadingValue Value="currentLanguage">
+    <CascadingValue Value="isDarkMode">
+        <div class="min-vh-100 d-flex flex-column"
+             data-bs-theme="@(isDarkMode ? "dark" : "light")"
+             dir="@(currentLanguage == "AR" ? "rtl" : "ltr")">
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <SharedTopBar CurrentLanguage="@currentLanguage"
+                          OnLanguageChanged="HandleLanguageChange"
+                          IsDarkMode="@isDarkMode"
+                          OnThemeChanged="HandleThemeChange" />
+
+            <main class="flex-grow-1 overflow-auto">
+                <div class="container-fluid py-4">
+                    @Body
+                </div>
+            </main>
         </div>
+    </CascadingValue>
+</CascadingValue>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+@code {
+    private string currentLanguage = "AR";
+    private bool isDarkMode = false;
+
+    private void HandleLanguageChange(string newLanguage) { currentLanguage = newLanguage; StateHasChanged(); }
+    private void HandleThemeChange(bool darkMode) { isDarkMode = darkMode; StateHasChanged(); }
+}

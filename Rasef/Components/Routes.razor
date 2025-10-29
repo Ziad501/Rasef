@@ -1,7 +1,79 @@
 ﻿@using Rasef.Components.Layout
+@inject NavigationManager Navigation
 
 <Router AppAssembly="@typeof(MauiProgram).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
+
+    <NotFound>
+        <PageTitle>@GetText("notFoundTitle")</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <div class="error-page-container">
+                <div class="error-content card shadow-lg border-0">
+                    <div class="error-icon-wrapper">
+                        <i class="bi bi-exclamation-triangle error-icon"></i>
+                    </div>
+
+                    <h1 class="error-code">404</h1>
+                    <h2 class="error-title">@GetText("notFoundTitle")</h2>
+                    <p class="error-message">@GetText("notFoundMessage")</p>
+
+                    <div class="error-actions d-flex gap-2 justify-content-center flex-wrap">
+                        <button class="btn btn-primary btn-lg" @onclick="GoHome">
+                            <i class="bi bi-house-door me-2"></i>@GetText("backHome")
+                        </button>
+                        
+                    </div>
+
+                    <div class="error-suggestions">
+                        <p class="text-muted mb-3">@GetText("suggestions")</p>
+                        <div class="suggestion-links d-flex gap-2 justify-content-center flex-wrap">
+                            <a href="/workorder/workflow" class="suggestion-link text-decoration-none">
+                                <i class="bi bi-clipboard-check"></i>
+                                <span>@GetText("workOrders")</span>
+                            </a>
+                            <a href="/dashboard" class="suggestion-link text-decoration-none">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>@GetText("dashboard")</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </LayoutView>
+    </NotFound>
 </Router>
+
+@code {
+    private string currentLang = "AR"; // or bind to your app’s language source
+
+    private Dictionary<string, Dictionary<string, string>> translations = new()
+    {
+        ["AR"] = new()
+        {
+            ["notFoundTitle"] = "الصفحة غير موجودة",
+            ["notFoundMessage"] = "عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها إلى موقع آخر",
+            ["backHome"] = "العودة للرئيسية",
+            ["goBack"] = "رجوع",
+            ["suggestions"] = "أو يمكنك زيارة إحدى هذه الصفحات:",
+            ["workOrders"] = "أوامر العمل",
+            ["dashboard"] = "لوحة التحكم"
+        },
+        ["EN"] = new()
+        {
+            ["notFoundTitle"] = "Page Not Found",
+            ["notFoundMessage"] = "Sorry, the page you're looking for doesn't exist or has been moved",
+            ["backHome"] = "Back to Home",
+            ["goBack"] = "Go Back",
+            ["suggestions"] = "Or visit one of these pages:",
+            ["workOrders"] = "Work Orders",
+            ["dashboard"] = "Dashboard"
+        }
+    };
+
+    private string GetText(string key) => translations[currentLang].TryGetValue(key, out var v) ? v : key;
+
+    private void GoHome() => Navigation.NavigateTo("/home");
+}

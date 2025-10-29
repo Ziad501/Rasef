@@ -1,0 +1,803 @@
+﻿@page "/workorder/details/{id:int}"
+@layout MainLayout
+@inject NavigationManager Nav
+@using System.Linq
+@inject IJSRuntime JS
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    [CascadingParameter] public string CurrentLanguage { get; set; } = "AR";
+
+    private string number = "";
+    private int stage = 3;
+    private string status = "Approved";
+    private string type = "Normal";
+
+    private DetailsVM vm = new();
+
+    private IEnumerable<Attachment> ConsultantAttachments => vm.Attachments.Where(a => a.UploadedBy == "Consultant");
+    private IEnumerable<Attachment> ContractorAttachments => vm.Attachments.Where(a => a.UploadedBy == "Contractor");
+
+    protected override void OnParametersSet()
+    {
+        number = $"WO-2025-{id:000}";
+
+        vm = new DetailsVM
+        {
+            StreetCategory = "Main",
+            Municipality = "جدة / Jeddah",
+            MainDistrict = "Al-Salamah",
+            SubDistrict = "Block A",
+            SingleStreetNo = "1001",
+            Sector = "Sector-1",
+            SelectedStreetNos = Array.Empty<string>(),
+            SectionNo = null,
+
+            WorkOrderDate = new DateTime(2025, 01, 20),
+            WorkOrderEndDate = new DateTime(2025, 02, 28),
+            WorkOrderRenewDate = new DateTime(2025, 02, 28),
+
+            AssignTo = "Consultant C",
+            ProjectRef = "Road Maintenance 2025",
+            ContractNumber = "CNT-2025-001",
+            SiteLocation = "Prince Mohammed Bin Abdulaziz St.",
+            WorkDuration = 45,
+
+            YearsOfLife = 2,
+            WarrantyStartDate = new DateTime(2025, 02, 28),
+            WarrantyEndDate = new DateTime(2027, 02, 28),
+
+            EquipmentName = "Compactor 2T",
+            ItemFixName = "Pothole repair set",
+            WorkOrderNotes = "Scope includes milling and overlay across lanes 1-2.",
+
+            ExcavationStatus = "RJPP",
+            ExcavationNotes = "Excavation permit exists"
+        };
+
+        vm.Lanes.AddRange(new[]
+        {
+            new LaneType { LaneNo = "1", Type = "Normal" },
+            new LaneType { LaneNo = "2", Type = "ExceptionPriority" }
+        });
+
+        vm.Items.AddRange(new[]
+        {
+            new BoqItem { Desc="Asphalt Milling", Code="AM-01", Unit="m²", Qty=1200, PrevExec=200, ExecQty=150 },
+            new BoqItem { Desc="Asphalt Overlay", Code="AO-03", Unit="m²", Qty=1200, PrevExec=0, ExecQty=150 }
+        });
+
+        vm.Equipment.AddRange(new[]
+        {
+            new EquipmentItem { Name="Compactor 2T", Quantity=2 },
+            new EquipmentItem { Name="Asphalt Paver", Quantity=1 }
+        });
+
+        vm.Fixes.AddRange(new[]
+        {
+            new FixItem { Name="Pothole repair set", Description="Standard repair kit" },
+            new FixItem { Name="Crack sealing", Description="Cold pour sealant" }
+        });
+
+        vm.Attachments.AddRange(new[]
+        {
+            new Attachment { Kind="ProjectPlan", Name="ProjectPlan.pdf", SizeBytes=1_800_000, UploadedBy="Consultant" },
+            new Attachment { Kind="Before",      Name="Before.jpg",     SizeBytes=900_000,  UploadedBy="Consultant" },
+            new Attachment { Kind="After",       Name="After.jpg",      SizeBytes=1_200_000,UploadedBy="Contractor" },
+            new Attachment { Kind="MapKey",      Name="Key.png",        SizeBytes=100_000,  UploadedBy="Consultant" },
+            new Attachment { Kind="Other",       Name="Specs.docx",     SizeBytes=300_000,  UploadedBy="Consultant" },
+        });
+
+        vm.History.AddRange(new[]
+        {
+            new WorkflowEntry { Stage="Consultant",         ActionBy="Consultant C", ActionDate=new DateTime(2025,1,20), Status="Submitted", Comments="Initial submission" },
+            new WorkflowEntry { Stage="Project Manager",    ActionBy="PM Ahmed",     ActionDate=new DateTime(2025,1,21), Status="Approved",  Comments="Approved for next stage" },
+            new WorkflowEntry { Stage="Department Manager", ActionBy="DM Ali",       ActionDate=new DateTime(2025,1,22), Status="Approved",  Comments="Looks good" },
+            new WorkflowEntry { Stage="Municipality Head",  ActionBy="Head Fahad",   ActionDate=new DateTime(2025,1,23), Status="Approved",  Comments="Auto-approved" },
+        });
+    }
+
+    private readonly Dictionary<string, Dictionary<string, string>> t = new()
+    {
+        ["AR"] = new()
+        {
+            ["title"] = "تفاصيل أمر العمل",
+            ["subtitle"] = "عرض كامل المعلومات والإجراءات",
+            ["back"] = "عودة",
+            ["print"] = "طباعة",
+            ["workOrderNumber"] = "رقم أمر العمل",
+            ["type"] = "النوع",
+            ["status"] = "الحالة",
+            ["createdDate"] = "تاريخ الإنشاء",
+            ["streetInfo"] = "معلومات الشارع",
+            ["municipality"] = "البلدية",
+            ["mainDistrict"] = "الحي الرئيسي",
+            ["subDistrict"] = "الحي الفرعي",
+            ["street"] = "الشارع",
+            ["streetNos"] = "أرقام الشوارع",
+            ["sectionNo"] = "رقم المقطع (فرعي)",
+            ["sector"] = "القطاع (رئيسي)",
+            ["category"] = "تصنيف الشارع",
+            ["mainStreet"] = "شارع رئيسي",
+            ["subStreet"] = "شارع فرعي",
+            ["perLaneTypes"] = "أنواع المسارات",
+            ["workflowProgress"] = "تقدم سير العمل",
+            ["projectDetails"] = "تفاصيل المشروع",
+            ["project"] = "المشروع",
+            ["contractNumber"] = "رقم العقد/الارتباط",
+            ["duration"] = "المدة",
+            ["days"] = "يوم",
+            ["siteLocation"] = "موقع الموقع",
+            ["notes"] = "الملاحظات",
+            ["orderDates"] = "تواريخ الأمر",
+            ["orderDate"] = "تاريخ الأمر",
+            ["endDate"] = "تاريخ الانتهاء",
+            ["renewDate"] = "تاريخ التجديد",
+            ["warranty"] = "الضمان",
+            ["yearsOfLife"] = "سنوات العمر",
+            ["years"] = "سنة",
+            ["warrantyStartDate"] = "بداية الضمان",
+            ["warrantyEndDate"] = "نهاية الضمان",
+            ["attachments"] = "المرفقات",
+            ["consultantAttachments"] = "مرفقات الاستشاري",
+            ["contractorAttachments"] = "مرفقات المقاول",
+            ["download"] = "تحميل",
+            ["uploadedBy"] = "رفع بواسطة",
+            ["workflowHistory"] = "سجل سير العمل",
+            ["stage"] = "المرحلة",
+            ["actionBy"] = "الإجراء بواسطة",
+            ["actionDate"] = "تاريخ الإجراء",
+            ["comments"] = "التعليقات",
+            ["equipment"] = "المعدات",
+            ["equipmentList"] = "قائمة المعدات",
+            ["quantity"] = "الكمية",
+            ["itemFix"] = "الإصلاحات",
+            ["fixList"] = "قائمة الإصلاحات",
+            ["description"] = "الوصف",
+            ["boqItems"] = "عناصر BOQ",
+            ["itemDesc"] = "وصف العنصر",
+            ["itemCode"] = "كود العنصر",
+            ["unit"] = "الوحدة",
+            ["qty"] = "الكمية",
+            ["prevExec"] = "التنفيذ السابق",
+            ["execQty"] = "كمية التنفيذ",
+            ["remainder"] = "الباقي",
+            ["excavationInfo"] = "معلومات الحفريات",
+            ["excavationStatus"] = "حالة الحفريات",
+            ["excavationNotes"] = "ملاحظات الحفريات",
+            ["Normal"] = "عادي",
+            ["ExceptionPriority"] = "استثناء أولوية",
+            ["ExceptionEmergency"] = "استثناء طارئ",
+            ["Approved"] = "معتمد",
+            ["PendingReview"] = "قيد المراجعة",
+            ["Rejected"] = "مرفوض",
+            ["InProgress"] = "قيد التنفيذ",
+            ["Completed"] = "مكتمل",
+            ["RJI"] = "إنشاء طلب أمر صيانة",
+            ["RJOP"] = "يوجد طلب لرخصة حفر",
+            ["RJPP"] = "رخصة حفر موجودة",
+            ["RJPBI"] = "جاهز للنشر في نظام رخص الحفريات",
+            ["RJPB"] = "في مرحلة النشر",
+            ["RJOR"] = "جاهز للنشر في نظام راصف",
+            ["RJOS"] = "اعتراض من قبل الحفريات",
+            ["RJOB"] = "تمت الموافقة"
+        },
+        ["EN"] = new()
+        {
+            ["title"] = "Work Order Details",
+            ["subtitle"] = "Complete information and actions view",
+            ["back"] = "Back",
+            ["print"] = "Print",
+            ["workOrderNumber"] = "Work Order #",
+            ["type"] = "Type",
+            ["status"] = "Status",
+            ["createdDate"] = "Created Date",
+            ["streetInfo"] = "Street Information",
+            ["municipality"] = "Municipality",
+            ["mainDistrict"] = "Main District",
+            ["subDistrict"] = "Sub-District",
+            ["street"] = "Street",
+            ["streetNos"] = "Street Nos",
+            ["sectionNo"] = "Section No (Sub)",
+            ["sector"] = "Sector (Main)",
+            ["category"] = "Street Category",
+            ["mainStreet"] = "Main Street",
+            ["subStreet"] = "Sub Street",
+            ["perLaneTypes"] = "Lane Types",
+            ["workflowProgress"] = "Workflow Progress",
+            ["projectDetails"] = "Project Details",
+            ["project"] = "Project",
+            ["contractNumber"] = "Contract Number",
+            ["duration"] = "Duration",
+            ["days"] = "Days",
+            ["siteLocation"] = "Site Location",
+            ["notes"] = "Notes",
+            ["orderDates"] = "Order Dates",
+            ["orderDate"] = "Order Date",
+            ["endDate"] = "End Date",
+            ["renewDate"] = "Renew Date",
+            ["warranty"] = "Warranty",
+            ["yearsOfLife"] = "Years Of Life",
+            ["years"] = "Years",
+            ["warrantyStartDate"] = "Warranty Start Date",
+            ["warrantyEndDate"] = "Warranty End Date",
+            ["attachments"] = "Attachments",
+            ["consultantAttachments"] = "Consultant Attachments",
+            ["contractorAttachments"] = "Contractor Attachments",
+            ["download"] = "Download",
+            ["uploadedBy"] = "Uploaded By",
+            ["workflowHistory"] = "Workflow History",
+            ["stage"] = "Stage",
+            ["actionBy"] = "Action By",
+            ["actionDate"] = "Action Date",
+            ["comments"] = "Comments",
+            ["equipment"] = "Equipment",
+            ["equipmentList"] = "Equipment List",
+            ["quantity"] = "Quantity",
+            ["itemFix"] = "Fixes",
+            ["fixList"] = "Fix List",
+            ["description"] = "Description",
+            ["boqItems"] = "BOQ Items",
+            ["itemDesc"] = "Item Desc",
+            ["itemCode"] = "Item Code",
+            ["unit"] = "Unit",
+            ["qty"] = "Qty",
+            ["prevExec"] = "Prev Exec",
+            ["execQty"] = "Exec Qty",
+            ["remainder"] = "Remainder",
+            ["excavationInfo"] = "Excavation Information",
+            ["excavationStatus"] = "Excavation Status",
+            ["excavationNotes"] = "Excavation Notes",
+            ["Normal"] = "Normal",
+            ["ExceptionPriority"] = "Exception Priority",
+            ["ExceptionEmergency"] = "Exception Emergency",
+            ["Approved"] = "Approved",
+            ["PendingReview"] = "Pending Review",
+            ["Rejected"] = "Rejected",
+            ["InProgress"] = "In Progress",
+            ["Completed"] = "Completed",
+            ["RJI"] = "Maintenance Request Created",
+            ["RJOP"] = "Excavation Permit Request Exists",
+            ["RJPP"] = "Excavation Permit Exists",
+            ["RJPBI"] = "Ready for Publishing",
+            ["RJPB"] = "In Publishing Stage",
+            ["RJOR"] = "Ready for Rasef System",
+            ["RJOS"] = "Objection from Excavation",
+            ["RJOB"] = "Approved"
+        }
+    };
+    string T(string k) => t[CurrentLanguage].TryGetValue(k, out var v) ? v : k;
+
+    private void GoBack() => Nav.NavigateTo("/workorder/workflow");
+    private async Task PrintOrder()
+    {
+        await JS.InvokeVoidAsync("window.print");
+    }
+
+    private static string TypeBadge(string type) => type switch
+    {
+        "Normal" => "bg-primary",
+        "ExceptionPriority" => "bg-warning text-dark",
+        "ExceptionEmergency" => "bg-danger",
+        _ => "bg-secondary"
+    };
+    private static string StatusBadge(string s) => s switch
+    {
+        "PendingReview" => "bg-warning text-dark",
+        "Approved" => "bg-success",
+        "Rejected" => "bg-danger",
+        "InProgress" => "bg-info text-dark",
+        "Completed" => "bg-secondary",
+        _ => "bg-secondary"
+    };
+    private static string StatusIcon(string s) => s switch
+    {
+        "PendingReview" => "bi-clock",
+        "Approved" => "bi-check-circle-fill",
+        "Rejected" => "bi-x-circle-fill",
+        "InProgress" => "bi-arrow-repeat",
+        "Completed" => "bi-check2-all",
+        _ => "bi-circle"
+    };
+    private static string ExcavationBadge(string code) => code switch
+    {
+        "RJI" or "RJOP" => "bg-info",
+        "RJPP" or "RJOR" or "RJOB" => "bg-success",
+        "RJPBI" or "RJPB" => "bg-warning text-dark",
+        "RJOS" => "bg-danger",
+        _ => "bg-secondary"
+    };
+
+    public class DetailsVM
+    {
+        public string StreetCategory { get; set; } = "Sub";
+        public string Municipality { get; set; } = "";
+        public string MainDistrict { get; set; } = "";
+        public string SubDistrict { get; set; } = "";
+        public string? SingleStreetNo { get; set; }
+        public string[] SelectedStreetNos { get; set; } = Array.Empty<string>();
+        public string? SectionNo { get; set; }
+        public string? Sector { get; set; }
+        public List<LaneType> Lanes { get; set; } = new();
+        public DateTime? WorkOrderDate { get; set; }
+        public DateTime? WorkOrderEndDate { get; set; }
+        public DateTime? WorkOrderRenewDate { get; set; }
+        public string AssignTo { get; set; } = "";
+        public string ProjectRef { get; set; } = "";
+        public string ContractNumber { get; set; } = "";
+        public string SiteLocation { get; set; } = "";
+        public int? WorkDuration { get; set; }
+        public int? YearsOfLife { get; set; }
+        public DateTime? WarrantyEndDate { get; set; }
+        public DateTime? WarrantyStartDate { get; set; }
+        public string EquipmentName { get; set; } = "";
+        public string ItemFixName { get; set; } = "";
+        public string WorkOrderNotes { get; set; } = "";
+        public string ExcavationStatus { get; set; } = "";
+        public string ExcavationNotes { get; set; } = "";
+        public List<BoqItem> Items { get; set; } = new();
+        public List<EquipmentItem> Equipment { get; set; } = new();
+        public List<FixItem> Fixes { get; set; } = new();
+        public List<Attachment> Attachments { get; set; } = new();
+        public List<WorkflowEntry> History { get; set; } = new();
+    }
+    public class LaneType { public string LaneNo { get; set; } = ""; public string Type { get; set; } = ""; }
+    public class BoqItem { public string Desc { get; set; } = ""; public string Code { get; set; } = ""; public string Unit { get; set; } = ""; public decimal Qty { get; set; } public decimal PrevExec { get; set; } public decimal ExecQty { get; set; } public decimal Remainder => Qty - PrevExec - ExecQty; }
+    public class EquipmentItem { public string Name { get; set; } = ""; public int Quantity { get; set; } }
+    public class FixItem { public string Name { get; set; } = ""; public string Description { get; set; } = ""; }
+    public class Attachment { public string Kind { get; set; } = ""; public string Name { get; set; } = ""; public long SizeBytes { get; set; } public string UploadedBy { get; set; } = ""; }
+    public class WorkflowEntry { public string Stage { get; set; } = ""; public string ActionBy { get; set; } = ""; public DateTime ActionDate { get; set; } public string Status { get; set; } = ""; public string Comments { get; set; } = ""; }
+}
+
+<div dir="@(CurrentLanguage == "AR" ? "rtl" : "ltr")">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h3 class="m-0 fw-bold">@T("title")</h3>
+            <p class="text-muted small mb-0">@T("subtitle")</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" @onclick="PrintOrder">
+                <i class="bi bi-printer me-2"></i> @T("print")
+            </button>
+            <button class="btn btn-outline-secondary" @onclick="GoBack">
+                <i class="bi @(CurrentLanguage == "AR" ? "bi-arrow-right" : "bi-arrow-left") me-2"></i> @T("back")
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded bg-primary text-white fs-4 p-2"><i class="bi bi-hash"></i></div>
+                    <div class="flex-grow-1">
+                        <div class="small text-muted text-uppercase fw-semibold">@T("workOrderNumber")</div>
+                        <div class="fw-bold text-primary">@number</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded bg-info text-white fs-4 p-2"><i class="bi bi-tag"></i></div>
+                    <div class="flex-grow-1">
+                        <div class="small text-muted text-uppercase fw-semibold">@T("type")</div>
+                        <div>
+                            @if (vm.StreetCategory == "Main")
+                            {
+                                <span class="text-muted">@T("perLaneTypes")</span>
+                            }
+                            else
+                            {
+                                <span class="badge @TypeBadge(type)">@T(type)</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded bg-success text-white fs-4 p-2"><i class="bi bi-check-circle"></i></div>
+                    <div class="flex-grow-1">
+                        <div class="small text-muted text-uppercase fw-semibold">@T("status")</div>
+                        <div><span class="badge @StatusBadge(status)"><i class="bi @StatusIcon(status) me-1"></i> @T(status)</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded bg-warning text-dark fs-4 p-2"><i class="bi bi-calendar3"></i></div>
+                    <div class="flex-grow-1">
+                        <div class="small text-muted text-uppercase fw-semibold">@T("createdDate")</div>
+                        <div>@vm.WorkOrderDate?.ToString("yyyy-MM-dd")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <!-- Street info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-signpost-2 me-2"></i> @T("streetInfo")</h5></div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="small text-muted text-uppercase fw-semibold">@T("category")</div>
+                            <div>@T(vm.StreetCategory == "Main" ? "mainStreet" : "subStreet")</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small text-muted text-uppercase fw-semibold">@T("municipality")</div>
+                            <div>@vm.Municipality</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small text-muted text-uppercase fw-semibold">@T("mainDistrict")</div>
+                            <div>@vm.MainDistrict</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small text-muted text-uppercase fw-semibold">@T("subDistrict")</div>
+                            <div>@vm.SubDistrict</div>
+                        </div>
+
+                        @if (vm.StreetCategory == "Sub")
+                        {
+                            <div class="col-md-6">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("streetNos")</div>
+                                <div>@string.Join(", ", vm.SelectedStreetNos)</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("sectionNo")</div>
+                                <div>@vm.SectionNo</div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-6">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("street")</div>
+                                <div>@vm.SingleStreetNo</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("sector")</div>
+                                <div>@vm.Sector</div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("perLaneTypes")</div>
+                                @if (vm.Lanes.Count == 0)
+                                {
+                                    <div class="text-muted">—</div>
+                                }
+                                else
+                                {
+                                    <div class="d-flex flex-wrap gap-2 mt-1">
+                                        @foreach (var ln in vm.Lanes)
+                                        {
+                                            <span class="badge @TypeBadge(ln.Type)">L@ln.LaneNo: @T(ln.Type)</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow progress -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-diagram-3 me-2"></i> @T("workflowProgress")</h5></div>
+                <div class="card-body">
+                    <StageProgress CurrentStageIndex="@stage" Lang="@CurrentLanguage" />
+                </div>
+            </div>
+
+            <!-- Excavation -->
+            @if (!string.IsNullOrEmpty(vm.ExcavationStatus))
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header"><h5 class="mb-0"><i class="bi bi-cone-striped me-2"></i> @T("excavationInfo")</h5></div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center gap-3">
+                            <span class="badge fs-6 @ExcavationBadge(vm.ExcavationStatus)">
+                                <i class="bi bi-info-circle me-1"></i> @T(vm.ExcavationStatus)
+                            </span>
+                            @if (!string.IsNullOrEmpty(vm.ExcavationNotes))
+                            {
+                                <div class="alert alert-secondary w-100 mb-0">
+                                    <i class="bi bi-sticky me-2"></i> @vm.ExcavationNotes
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Attachments -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-paperclip me-2"></i> @T("attachments")</h5></div>
+                <div class="card-body">
+                    @if (vm.Attachments.Count == 0)
+                    {
+                        <div class="text-muted text-center py-4">—</div>
+                    }
+                    else
+                    {
+                        @if (ConsultantAttachments.Any())
+                        {
+                            <h6 class="text-primary mb-3"><i class="bi bi-person-badge me-2"></i> @T("consultantAttachments")</h6>
+                            <div class="row g-3 mb-4">
+                                @foreach (var a in ConsultantAttachments)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center gap-3 border rounded p-3 bg-body-secondary">
+                                            <i class="bi @((a.Kind == "Before" || a.Kind == "After") ? "bi-file-earmark-image" : (a.Kind == "ProjectPlan" ? "bi-file-earmark-pdf" : "bi-file-earmark")) fs-3 text-primary"></i>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-semibold text-truncate">@a.Name</div>
+                                                <div class="small text-muted d-flex gap-2">
+                                                    <span class="badge bg-secondary">@a.Kind</span>
+                                                    <span>@(Math.Round(a.SizeBytes / 1024d / 1024d, 2)) MB</span>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary"><i class="bi bi-download"></i></button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (ContractorAttachments.Any())
+                        {
+                            <h6 class="text-success mb-3"><i class="bi bi-person-workspace me-2"></i> @T("contractorAttachments")</h6>
+                            <div class="row g-3">
+                                @foreach (var a in ContractorAttachments)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center gap-3 border rounded p-3 bg-body-secondary">
+                                            <i class="bi @((a.Kind == "Before" || a.Kind == "After") ? "bi-file-earmark-image" : "bi-file-earmark") fs-3 text-primary"></i>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-semibold text-truncate">@a.Name</div>
+                                                <div class="small text-muted d-flex gap-2">
+                                                    <span class="badge bg-secondary">@a.Kind</span>
+                                                    <span>@(Math.Round(a.SizeBytes / 1024d / 1024d, 2)) MB</span>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary"><i class="bi bi-download"></i></button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Workflow history -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-clock-history me-2"></i> @T("workflowHistory")</h5></div>
+                <div class="card-body">
+                    @if (vm.History.Count == 0)
+                    {
+                        <div class="text-muted text-center py-4">—</div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var h in vm.History)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="fw-semibold text-primary">@h.Stage</div>
+                                        <div class="small text-muted">@h.ActionDate.ToString("yyyy-MM-dd")</div>
+                                    </div>
+                                    <div class="mt-2 d-flex flex-column gap-1">
+                                        <div><span class="text-muted small">@T("actionBy"):</span> <span class="fw-medium">@h.ActionBy</span></div>
+                                        <div><span class="text-muted small">@T("status"):</span> <span class="badge @StatusBadge(h.Status)">@h.Status</span></div>
+                                        @if (!string.IsNullOrEmpty(h.Comments))
+                                        {
+                                            <div class="alert alert-secondary mb-0 py-2"><i class="bi bi-chat-left-text me-1"></i> @h.Comments</div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Project details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-folder2-open me-2"></i> @T("projectDetails")</h5></div>
+                <div class="card-body">
+                    <div class="vstack gap-3">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded bg-primary-subtle text-primary p-2"><i class="bi bi-briefcase"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("project")</div>
+                                <div class="fw-medium">@vm.ProjectRef</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded bg-secondary-subtle text-secondary p-2"><i class="bi bi-file-text"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("contractNumber")</div>
+                                <div class="fw-medium">@vm.ContractNumber</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded bg-info-subtle text-info p-2"><i class="bi bi-clock"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("duration")</div>
+                                <div><span class="badge bg-info text-dark">@vm.WorkDuration @T("days")</span></div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded bg-success-subtle text-success p-2"><i class="bi bi-geo-alt"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("siteLocation")</div>
+                                <div class="fw-medium">@vm.SiteLocation</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded bg-warning-subtle text-warning p-2"><i class="bi bi-sticky"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="small text-muted text-uppercase fw-semibold">@T("notes")</div>
+                                <div class="text-muted">@vm.WorkOrderNotes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (vm.Equipment.Count > 0)
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header"><h5 class="mb-0"><i class="bi bi-tools me-2"></i> @T("equipmentList")</h5></div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            @foreach (var eq in vm.Equipment)
+                            {
+                                <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                    <div><i class="bi bi-wrench-adjustable text-primary me-2"></i><span class="fw-semibold">@eq.Name</span></div>
+                                    <span class="badge bg-primary">@eq.Quantity x</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (vm.Fixes.Count > 0)
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header"><h5 class="mb-0"><i class="bi bi-gear me-2"></i> @T("fixList")</h5></div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            @foreach (var fix in vm.Fixes)
+                            {
+                                <div class="list-group-item px-0">
+                                    <div class="fw-semibold mb-1"><i class="bi bi-check-circle text-success me-2"></i> @fix.Name</div>
+                                    <small class="text-muted">@fix.Description</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-calendar3 me-2"></i> @T("orderDates")</h5></div>
+                <div class="card-body">
+                    <div class="vstack gap-3">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle bg-primary p-2"></div>
+                            <div>
+                                <div class="small text-muted text-uppercase fw-semibold">@T("orderDate")</div>
+                                <div class="fw-semibold">@vm.WorkOrderDate?.ToString("yyyy-MM-dd")</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle bg-info p-2"></div>
+                            <div>
+                                <div class="small text-muted text-uppercase fw-semibold">@T("endDate")</div>
+                                <div class="fw-semibold">@vm.WorkOrderEndDate?.ToString("yyyy-MM-dd")</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle bg-success p-2"></div>
+                            <div>
+                                <div class="small text-muted text-uppercase fw-semibold">@T("renewDate")</div>
+                                <div class="fw-semibold">@vm.WorkOrderRenewDate?.ToString("yyyy-MM-dd")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-shield-check me-2"></i> @T("warranty")</h5></div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <span class="badge bg-primary fs-6"><i class="bi bi-award-fill me-2"></i> @vm.YearsOfLife @T("years")</span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-calendar-check text-success fs-4"></i>
+                                <div>
+                                    <div class="small text-muted text-uppercase fw-semibold">@T("warrantyStartDate")</div>
+                                    <div class="fw-semibold">@vm.WarrantyStartDate?.ToString("yyyy-MM-dd")</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-calendar-x text-danger fs-4"></i>
+                                <div>
+                                    <div class="small text-muted text-uppercase fw-semibold">@T("warrantyEndDate")</div>
+                                    <div class="fw-semibold">@vm.WarrantyEndDate?.ToString("yyyy-MM-dd")</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOQ items -->
+        @if (vm.Items.Count > 0)
+        {
+            <div class="col-12 mt-4">
+                <div class="card shadow-sm">
+                    <div class="card-header"><h5 class="mb-0"><i class="bi bi-list-check me-2"></i> @T("boqItems")</h5></div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            @foreach (var item in vm.Items)
+                            {
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <div class="fw-semibold">@item.Desc</div>
+                                            <span class="badge bg-primary">@item.Code</span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row text-center g-3">
+                                                <div class="col-6 col-lg-3">
+                                                    <div class="small text-muted text-uppercase fw-semibold">@T("qty")</div>
+                                                    <div class="fw-bold">@item.Qty <span class="text-muted">@item.Unit</span></div>
+                                                </div>
+                                                <div class="col-6 col-lg-3">
+                                                    <div class="small text-muted text-uppercase fw-semibold">@T("prevExec")</div>
+                                                    <div class="fw-bold text-warning">@item.PrevExec</div>
+                                                </div>
+                                                <div class="col-6 col-lg-3">
+                                                    <div class="small text-muted text-uppercase fw-semibold">@T("execQty")</div>
+                                                    <div class="fw-bold text-info">@item.ExecQty</div>
+                                                </div>
+                                                <div class="col-6 col-lg-3">
+                                                    <div class="small text-muted text-uppercase fw-semibold">@T("remainder")</div>
+                                                    <div class="fw-bold text-success">@item.Remainder</div>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-3" role="progressbar" aria-label="progress" aria-valuemin="0" aria-valuemax="100"
+                                                 aria-valuenow="@((int)((item.PrevExec + item.ExecQty) / item.Qty * 100))">
+                                                <div class="progress-bar" style="width:@(((item.PrevExec + item.ExecQty) / item.Qty * 100).ToString("0"))%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
