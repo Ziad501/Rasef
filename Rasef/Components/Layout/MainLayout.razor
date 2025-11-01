@@ -1,29 +1,42 @@
 ﻿@inherits LayoutComponentBase
+@inject CultureService Culture
+@implements IDisposable
 
-<CascadingValue Value="currentLanguage">
-    <CascadingValue Value="isDarkMode">
-        <div class="min-vh-100 d-flex flex-column"
-             data-bs-theme="@(isDarkMode ? "dark" : "light")"
-             dir="@(currentLanguage == "AR" ? "rtl" : "ltr")">
-
-            <SharedTopBar CurrentLanguage="@currentLanguage"
-                          OnLanguageChanged="HandleLanguageChange"
-                          IsDarkMode="@isDarkMode"
-                          OnThemeChanged="HandleThemeChange" />
-
-            <main class="flex-grow-1 overflow-auto">
-                <div class="container-fluid py-4">
-                    @Body
-                </div>
-            </main>
+<div class="min-vh-100 d-flex flex-column"
+     data-bs-theme="@(isDarkMode ? "dark" : "light")"
+     dir="@(Culture.IsArabic ? "rtl" : "ltr")">
+    <SharedTopBar IsDarkMode="@isDarkMode" OnThemeChanged="HandleThemeChange" />
+    <main class="flex-grow-1 overflow-auto">
+        <div class="container-fluid py-4">
+            @Body
         </div>
-    </CascadingValue>
-</CascadingValue>
+    </main>
+</div>
 
 @code {
-    private string currentLanguage = "AR";
-    private bool isDarkMode = false;
+    private bool isDarkMode;
 
-    private void HandleLanguageChange(string newLanguage) { currentLanguage = newLanguage; StateHasChanged(); }
-    private void HandleThemeChange(bool darkMode) { isDarkMode = darkMode; StateHasChanged(); }
+    protected override void OnInitialized()
+    {
+        // Subscribe to culture changes
+        Culture.OnChange += HandleCultureChanged;
+    }
+
+    private void HandleCultureChanged()
+    {
+        // Force re-render when culture changes
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleThemeChange(bool value)
+    {
+        isDarkMode = value;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from culture changes
+        Culture.OnChange -= HandleCultureChanged;
+    }
 }

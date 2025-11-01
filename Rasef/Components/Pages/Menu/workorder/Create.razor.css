@@ -1,0 +1,139 @@
+/* ---------- Header ---------- */
+.header-back-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--bs-border-color);
+}
+
+/* ---------- Tabs polish ---------- */
+.nav-tabs .nav-link {
+    color: var(--bs-body-color);
+    border-radius: .5rem .5rem 0 0;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+    .nav-tabs .nav-link:hover {
+        background-color: var(--bs-tertiary-bg, #f8f9fa);
+    }
+
+    .nav-tabs .nav-link.active {
+        font-weight: 600;
+        color: var(--bs-body-color);
+        background-color: var(--bs-body-bg);
+        border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
+    }
+
+/* ---------- Section headers inside GENERAL tab ---------- */
+.section-title {
+    font-weight: 700;
+    margin-bottom: .5rem;
+}
+
+.section-subtle {
+    color: var(--bs-secondary-color, #6c757d);
+    margin-bottom: 1rem;
+}
+
+/* ---------- Cards / Containers ---------- */
+.card {
+    border-color: var(--bs-border-color);
+}
+
+.card-header {
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+    border-bottom-color: var(--bs-border-color);
+}
+
+/* ---------- Forms & focus (inherits global theme variables) ---------- */
+.form-label.small {
+    font-size: .85rem;
+}
+
+.input-group .input-group-text {
+    background: var(--bs-tertiary-bg, #f8f9fa);
+}
+
+/* ---------- Dynamic list rows (lanes, equipment, fixes) ---------- */
+.row-item {
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    padding: .75rem;
+    background: var(--bs-body-bg);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+}
+
+    .row-item + .row-item {
+        margin-top: .75rem;
+    }
+
+    .row-item .remove-btn {
+        border-color: var(--bs-border-color);
+    }
+
+/* ---------- “Add” button group spacing ---------- */
+.add-actions {
+    display: flex;
+    gap: .5rem;
+}
+
+/* ---------- Attachments dropzone / list ---------- */
+.attach-dropzone {
+    border: 2px dashed var(--bs-border-color);
+    border-radius: .75rem;
+    padding: 1.25rem;
+    background: var(--bs-tertiary-bg, #f8f9fa);
+    text-align: center;
+    transition: background-color .2s ease, border-color .2s ease;
+}
+
+    .attach-dropzone:hover {
+        background: var(--bs-body-bg);
+        border-color: var(--bs-primary);
+    }
+
+.attach-list {
+    display: grid;
+    gap: .5rem;
+}
+
+.attach-item {
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    padding: .5rem .75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ---------- BOQ table ---------- */
+.boq-table thead th {
+    white-space: nowrap;
+}
+
+.boq-table td,
+.boq-table th {
+    vertical-align: middle;
+}
+
+.boq-table .qty-input {
+    max-width: 120px;
+}
+
+/* ---------- Validation tweaks (leverages your global colors) ---------- */
+.validation-message {
+    font-size: .875rem;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 576px) {
+    .nav-tabs .nav-link {
+        padding: .5rem .75rem;
+    }
+
+    .row-item {
+        padding: .5rem;
+    }
+}

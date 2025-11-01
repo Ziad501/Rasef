@@ -1,67 +1,28 @@
 ﻿@page "/workorder/edit/{id:int}"
+@using Rasef.Resources.Localization
+@using Microsoft.AspNetCore.Components.Forms
 @layout MainLayout
 @inject NavigationManager Nav
+@inject IStringLocalizer<Strings> L
+@inject CultureService Culture
+@implements IDisposable
 
 @code {
-    [Parameter] public int id { get; set; }
-    [CascadingParameter] public string CurrentLanguage { get; set; } = "AR";
-
-    // simple VM for editing (Bootstrap only)
-    private EditVM vm = new();
-
-    private readonly Dictionary<string, Dictionary<string, string>> t = new()
+    protected override void OnInitialized()
     {
-        ["AR"] = new()
-        {
-            ["title"] = "تعديل أمر العمل",
-            ["subtitle"] = "حدّث بيانات أمر العمل واحفظ التغييرات",
-            ["workOrderNumber"] = "رقم أمر العمل",
-            ["type"] = "النوع",
-            ["status"] = "الحالة",
-            ["municipality"] = "البلدية",
-            ["street"] = "الشارع",
-            ["createdDate"] = "تاريخ الإنشاء",
-            ["notes"] = "ملاحظات",
-            ["save"] = "حفظ التغييرات",
-            ["cancel"] = "إلغاء",
-            ["Normal"] = "عادي",
-            ["ExceptionPriority"] = "استثناء أولوية",
-            ["ExceptionEmergency"] = "استثناء طارئ",
-            ["PendingReview"] = "قيد المراجعة",
-            ["Approved"] = "معتمد",
-            ["Rejected"] = "مرفوض",
-            ["InProgress"] = "قيد التنفيذ",
-            ["Completed"] = "مكتمل"
-        },
-        ["EN"] = new()
-        {
-            ["title"] = "Edit Work Order",
-            ["subtitle"] = "Update work order details and save changes",
-            ["workOrderNumber"] = "Work Order #",
-            ["type"] = "Type",
-            ["status"] = "Status",
-            ["municipality"] = "Municipality",
-            ["street"] = "Street",
-            ["createdDate"] = "Created Date",
-            ["notes"] = "Notes",
-            ["save"] = "Save Changes",
-            ["cancel"] = "Cancel",
-            ["Normal"] = "Normal",
-            ["ExceptionPriority"] = "Exception Priority",
-            ["ExceptionEmergency"] = "Exception Emergency",
-            ["PendingReview"] = "Pending Review",
-            ["Approved"] = "Approved",
-            ["Rejected"] = "Rejected",
-            ["InProgress"] = "In Progress",
-            ["Completed"] = "Completed"
-        }
-    };
+        Culture.OnChange += HandleCultureChanged;
+        base.OnInitialized();
+    }
 
-    string T(string k) => t[CurrentLanguage].TryGetValue(k, out var v) ? v : k;
+    private void HandleCultureChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Culture.OnChange -= HandleCultureChanged;
+
+    [Parameter] public int id { get; set; }
+
+    private EditVM vm = new();
 
     protected override void OnParametersSet()
     {
-        // Pretend we loaded the record by id (prefill with sensible defaults)
         vm = new EditVM
         {
             Number = $"WO-2025-{id:000}",
@@ -74,13 +35,7 @@
         };
     }
 
-    private void Save()
-    {
-        // TODO: persist changes in your real data layer
-        // Navigate to details after save
-        Nav.NavigateTo($"/workorder/details/{id}");
-    }
-
+    private void Save() => Nav.NavigateTo($"/workorder/details/{id}");
     private void Cancel() => Nav.NavigateTo("/workorder/workflow");
 
     public class EditVM
@@ -95,78 +50,87 @@
     }
 }
 
-<div dir="@(CurrentLanguage == "AR" ? "rtl" : "ltr")">
+<div dir="@(Culture.IsArabic ? "rtl" : "ltr")">
+    <!-- Header / Actions -->
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
         <div>
-            <h3 class="m-0 fw-bold">@T("title")</h3>
-            <p class="text-muted small mb-0">@T("subtitle")</p>
+            <h3 class="m-0 fw-bold">@L["title_edit"]</h3>
+            <p class="text-muted small mb-0">@L["subtitle_edit"]</p>
         </div>
+
         <div class="d-flex gap-2">
             <button class="btn btn-primary" @onclick="Save">
-                <i class="bi bi-save me-2"></i> @T("save")
+                <i class="bi bi-save me-2"></i> @L["save"]
             </button>
             <button class="btn btn-outline-secondary" @onclick="Cancel">
-                <i class="bi bi-x-circle me-2"></i> @T("cancel")
+                <i class="bi bi-x-circle me-2"></i> @L["cancel"]
             </button>
         </div>
     </div>
 
+    <!-- Form -->
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label small fw-semibold text-muted">@T("workOrderNumber")</label>
-                    <input class="form-control" @bind="vm.Number" disabled />
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label small fw-semibold text-muted">@T("type")</label>
-                    <select class="form-select" @bind="vm.Type">
-                        <option value="Normal">@T("Normal")</option>
-                        <option value="ExceptionPriority">@T("ExceptionPriority")</option>
-                        <option value="ExceptionEmergency">@T("ExceptionEmergency")</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label small fw-semibold text-muted">@T("status")</label>
-                    <select class="form-select" @bind="vm.Status">
-                        <option value="PendingReview">@T("PendingReview")</option>
-                        <option value="Approved">@T("Approved")</option>
-                        <option value="Rejected">@T("Rejected")</option>
-                        <option value="InProgress">@T("InProgress")</option>
-                        <option value="Completed">@T("Completed")</option>
-                    </select>
+                    <label class="form-label small fw-semibold text-muted">@L["workOrderNumber"]</label>
+                    <InputText class="form-control" @bind-Value="vm.Number" disabled />
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label small fw-semibold text-muted">@T("municipality")</label>
-                    <select class="form-select" @bind="vm.Municipality">
+                    <label class="form-label small fw-semibold text-muted">@L["type"]</label>
+                    <InputSelect class="form-select" @bind-Value="vm.Type">
+                        <option value="Normal">@L["Normal"]</option>
+                        <option value="ExceptionPriority">@L["ExceptionPriority"]</option>
+                        <option value="ExceptionEmergency">@L["ExceptionEmergency"]</option>
+                    </InputSelect>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold text-muted">@L["status"]</label>
+                    <InputSelect class="form-select" @bind-Value="vm.Status">
+                        <option value="PendingReview">@L["PendingReview"]</option>
+                        <option value="Approved">@L["Approved"]</option>
+                        <option value="Rejected">@L["Rejected"]</option>
+                        <option value="InProgress">@L["InProgress"]</option>
+                        <option value="Completed">@L["Completed"]</option>
+                    </InputSelect>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold text-muted">@L["municipality"]</label>
+                    <InputSelect class="form-select" @bind-Value="vm.Municipality">
                         <option>جدة / Jeddah</option>
                         <option>مكة / Mecca</option>
                         <option>الرياض / Riyadh</option>
-                    </select>
+                    </InputSelect>
                 </div>
+
                 <div class="col-md-5">
-                    <label class="form-label small fw-semibold text-muted">@T("street")</label>
-                    <input class="form-control" @bind="vm.Street" />
+                    <label class="form-label small fw-semibold text-muted">@L["street"]</label>
+                    <InputText class="form-control" @bind-Value="vm.Street" />
                 </div>
+
                 <div class="col-md-3">
-                    <label class="form-label small fw-semibold text-muted">@T("createdDate")</label>
-                    <input type="date" class="form-control"
-                           @bind="vm.Created" @bind:format="yyyy-MM-dd" />
+                    <label class="form-label small fw-semibold text-muted">@L["createdDate"]</label>
+                    <InputDate DateFormat="yyyy-MM-dd"
+                               class="form-control"
+                               @bind-Value="vm.Created" />
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label small fw-semibold text-muted">@T("notes")</label>
-                    <textarea class="form-control" rows="4" @bind="vm.Notes"></textarea>
+                    <label class="form-label small fw-semibold text-muted">@L["notes"]</label>
+                    <InputTextArea class="form-control" rows="4" @bind-Value="vm.Notes" />
                 </div>
             </div>
         </div>
+
         <div class="card-footer d-flex justify-content-end gap-2">
             <button class="btn btn-primary" @onclick="Save">
-                <i class="bi bi-save me-2"></i> @T("save")
+                <i class="bi bi-save me-2"></i> @L["save"]
             </button>
             <button class="btn btn-outline-secondary" @onclick="Cancel">
-                <i class="bi bi-x-circle me-2"></i> @T("cancel")
+                <i class="bi bi-x-circle me-2"></i> @L["cancel"]
             </button>
         </div>
     </div>

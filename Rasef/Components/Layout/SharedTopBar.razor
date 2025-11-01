@@ -1,5 +1,8 @@
 ﻿@* Components/Shared/SharedTopBar.razor *@
-@inject NavigationManager Nav
+@using Rasef.Resources.Localization
+@inject IStringLocalizer<Strings> L
+@inject CultureService Culture
+@implements IDisposable
 
 <nav class="navbar navbar-expand-lg topbar shadow-sm">
     <div class="container-fluid px-3">
@@ -9,46 +12,97 @@
             </div>
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#topNav"
+                aria-controls="topNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="topNav">
             <div class="d-flex flex-wrap gap-2 me-auto ms-lg-3 mt-2 mt-lg-0">
                 <a href="/home" class="btn btn-sm px-3 nav-btn">
-                    <i class="bi bi-house-door me-1"></i>@T("home")
+                    <i class="bi bi-house-door me-1"></i> @L["home"]
                 </a>
 
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm px-3 dropdown-toggle nav-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-grid-3x3-gap me-1"></i>
-                        @T("menu")
+                        <i class="bi bi-grid-3x3-gap me-1"></i> @L["menu"]
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/pavement">@T("pavement") <i class="bi bi-bricks me-2"></i></a></li>
-                        <li><a class="dropdown-item" href="/workorder/Workflow">@T("workOrder") <i class="bi bi-clipboard-check me-2"></i></a></li>
+                        <li>
+                            <a class="dropdown-item" href="/pavement">
+                                @L["pavement"] <i class="bi bi-bricks me-2"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/workorder/workflow">
+                                @L["workOrder"] <i class="bi bi-clipboard-check me-2"></i>
+                            </a>
+                        </li>
 
-                        <li><a class="dropdown-item" href="/EAM">@T("EAM") <i class="bi bi-gear-wide-connected me-2"></i></a></li>
-                        <li><a class="dropdown-item" href="/distortion">@T("distortion") <i class="bi bi-activity me-2"></i></a></li>
+                        <li>
+                            <a class="dropdown-item" href="/EAM">
+                                @L["EAM"] <i class="bi bi-gear-wide-connected me-2"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/distortion">
+                                @L["distortion"] <i class="bi bi-activity me-2"></i>
+                            </a>
+                        </li>
 
-                        <li><hr class="dropdown-divider"></li>
+                        <li><hr class="dropdown-divider" /></li>
 
-                        <li><a class="dropdown-item" href="/businessIntelligence">@T("businessIntelligence") <i class="bi bi-lightbulb me-2"></i></a></li>
-                        <li><a class="dropdown-item" href="/dashboards">@T("dashboards") <i class="bi bi-bar-chart me-2"></i></a></li>
-                        <li><a class="dropdown-item" href="/gis">@T("gis") <i class="bi bi-map me-2"></i></a></li>
+                        <li>
+                            <a class="dropdown-item" href="/businessIntelligence">
+                                @L["businessIntelligence"] <i class="bi bi-lightbulb me-2"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/dashboards">
+                                @L["dashboards"] <i class="bi bi-bar-chart me-2"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/gis">
+                                @L["gis"] <i class="bi bi-map me-2"></i>
+                            </a>
+                        </li>
 
-                        <li><hr class="dropdown-divider"></li>
+                        <li><hr class="dropdown-divider" /></li>
 
-                        <li><a class="dropdown-item" href="/parameters">@T("parameters") <i class="bi bi-sliders me-2"></i></a></li>
-                        <li><a class="dropdown-item" href="/configuration">@T("configuration") <i class="bi bi-tools me-2"></i></a></li>
-                        <li><a class="dropdown-item" href="/geoProvider">@T("geoProvider") <i class="bi bi-geo-alt me-2"></i></a></li>
-                        <li><a class="dropdown-item" href="/systemSettings">@T("systemSettings") <i class="bi bi-gear me-2"></i></a></li>
+                        <li>
+                            <a class="dropdown-item" href="/parameters">
+                                @L["parameters"] <i class="bi bi-sliders me-2"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/configuration">
+                                @L["configuration"] <i class="bi bi-tools me-2"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/geoProvider">
+                                @L["geoProvider"] <i class="bi bi-geo-alt me-2"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/systemSettings">
+                                @L["systemSettings"] <i class="bi bi-gear me-2"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
-                <a href="/profile" class="btn btn-sm px-3 nav-btn"><i class="bi bi-person-circle me-1"></i> @T("profile")</a>
-                <a href="/about" class="btn btn-sm px-3 nav-btn"><i class="bi bi-info-circle me-1"></i> @T("about")</a>
-                <a href="/settings" class="btn btn-sm px-3 nav-btn"><i class="bi bi-gear-fill me-1"></i> @T("settings")</a>
+                <a href="/profile" class="btn btn-sm px-3 nav-btn">
+                    <i class="bi bi-person-circle me-1"></i> @L["profile"]
+                </a>
+                <a href="/about" class="btn btn-sm px-3 nav-btn">
+                    <i class="bi bi-info-circle me-1"></i> @L["about"]
+                </a>
+                <a href="/settings" class="btn btn-sm px-3 nav-btn">
+                    <i class="bi bi-gear-fill me-1"></i> @L["settings"]
+                </a>
             </div>
 
             <div class="d-flex gap-2 mt-2 mt-lg-0">
@@ -58,136 +112,32 @@
                 </button>
 
                 <button type="button" class="btn btn-sm px-3 language-toggle" @onclick="ToggleLanguage">
-                    @CurrentLanguage
+                    @(Culture.IsArabic ? "EN" : "AR")
                 </button>
 
                 <a href="/" class="btn btn-sm px-3 logout-btn">
-                    <i class="bi bi-box-arrow-right me-1"></i> @T("logout")
+                    <i class="bi bi-box-arrow-right me-1"></i> @L["logout"]
                 </a>
             </div>
         </div>
     </div>
 </nav>
 
-<style>
-    /* --- Top bar (LIGHT MODE default) --- */
-    .topbar {
-        background: #ffffff;
-        border-bottom: 1px solid var(--bs-border-color);
-    }
-
-        .topbar .nav-btn,
-        .topbar .theme-toggle,
-        .topbar .language-toggle,
-        .topbar .logout-btn {
-            color: #0d1117; /* dark text on light bg */
-            background: rgba(0,0,0,.04);
-            border: 0;
-        }
-
-            .topbar .nav-btn:hover,
-            .topbar .theme-toggle:hover,
-            .topbar .language-toggle:hover,
-            .topbar .logout-btn:hover {
-                background: rgba(0,0,0,.08);
-            }
-
-        /* Toggler (light) */
-        .topbar .navbar-toggler {
-            border: 0;
-        }
-
-        .topbar .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(13,17,23,.85)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-    /* --- Top bar (DARK MODE) --- */
-    [data-bs-theme="dark"] .topbar {
-        background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-        border-bottom-color: #30363d;
-    }
-
-        [data-bs-theme="dark"] .topbar .nav-btn,
-        [data-bs-theme="dark"] .topbar .theme-toggle,
-        [data-bs-theme="dark"] .topbar .language-toggle,
-        [data-bs-theme="dark"] .topbar .logout-btn {
-            color: #fff;
-            background: rgba(255,255,255,.10);
-        }
-
-            [data-bs-theme="dark"] .topbar .nav-btn:hover,
-            [data-bs-theme="dark"] .topbar .theme-toggle:hover,
-            [data-bs-theme="dark"] .topbar .language-toggle:hover,
-            [data-bs-theme="dark"] .topbar .logout-btn:hover {
-                background: rgba(255,255,255,.22);
-            }
-
-        /* Toggler (dark) */
-        [data-bs-theme="dark"] .topbar .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-    /* Logo holder keeps its look in both modes (dark mode already overrides .bg-white project-wide) */
-    .logo-container {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-</style>
-
-
 @code {
-    [Parameter] public string CurrentLanguage { get; set; } = "AR";
-    [Parameter] public EventCallback<string> OnLanguageChanged { get; set; }
     [Parameter] public bool IsDarkMode { get; set; }
     [Parameter] public EventCallback<bool> OnThemeChanged { get; set; }
 
-    private Dictionary<string, Dictionary<string, string>> translations = new()
-    {
-        ["AR"] = new()
-        {
-            ["home"] = "الرئيسية",
-            ["menu"] = "القائمة",
-            ["profile"] = "الملف الشخصي",
-            ["about"] = "حول",
-            ["settings"] = "الإعدادات",
-            ["logout"] = "تسجيل الخروج",
-            ["pavement"] = "الرصف",
-            ["workOrder"] = "أوامر العمل",
-            ["dashboards"] = "لوحات المعلومات",
-            ["businessIntelligence"] = "ذكاء الأعمال",
-            ["geoProvider"] = "مزود الخرائط",
-            ["systemSettings"] = "إعدادات النظام",
-            ["EAM"] = "نظام إدارة الأصول المؤسسية",
-            ["distortion"] = "الإنحراف",
-            ["gis"] = "نظام المعلومات الجغرافية",
-            ["parameters"] = "حدود",
-            ["configuration"] = "إعدادات"
-        },
-        ["EN"] = new()
-        {
-            ["home"] = "Home",
-            ["menu"] = "Menu",
-            ["profile"] = "Profile",
-            ["about"] = "About",
-            ["settings"] = "Settings",
-            ["logout"] = "Logout",
-            ["pavement"] = "Pavement",
-            ["workOrder"] = "Work Order",
-            ["dashboards"] = "Dashboards",
-            ["businessIntelligence"] = "Business Intelligence",
-            ["geoProvider"] = "Geo Provider",
-            ["systemSettings"] = "System Settings",
-            ["EAM"] = "Enterprise Asset Management",
-            ["distortion"] = "Distortion",
-            ["gis"] = "GIS",
-            ["parameters"] = "Parameters",
-            ["configuration"] = "Configuration"
-        }
-    };
+    protected override void OnInitialized() => Culture.OnChange += HandleCultureChanged;
 
-    private string T(string key) => translations[CurrentLanguage].TryGetValue(key, out var v) ? v : key;
+    private void HandleCultureChanged() => InvokeAsync(StateHasChanged);
 
-    private Task ToggleLanguage() => OnLanguageChanged.InvokeAsync(CurrentLanguage == "AR" ? "EN" : "AR");
     private Task ToggleTheme() => OnThemeChanged.InvokeAsync(!IsDarkMode);
+
+    private void ToggleLanguage()
+    {
+        Culture.Toggle();
+        // StateHasChanged is triggered by HandleCultureChanged
+    }
+
+    public void Dispose() => Culture.OnChange -= HandleCultureChanged;
 }

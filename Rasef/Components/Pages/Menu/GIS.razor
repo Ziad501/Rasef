@@ -10,18 +10,23 @@
                     <img src="/css/img/logo.png" alt="راصف" height="32" />
                 </div>
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="topNav">
                 <div class="d-flex flex-wrap gap-2 me-auto ms-lg-3 mt-2 mt-lg-0">
-                    <a href="/home" class="btn btn-sm px-3 nav-btn"><i class="bi bi-house-door me-1"></i> الرئيسية</a>
-                    <a href="/gis" class="btn btn-sm px-3 nav-btn active"><i class="bi bi-map me-1"></i> GIS</a>
+                    <a href="/home" class="btn btn-sm px-3 nav-btn">
+                        <i class="bi bi-house-door me-1"></i> الرئيسية
+                    </a>
+                    <a href="/gis" class="btn btn-sm px-3 nav-btn active">
+                        <i class="bi bi-map me-1"></i> GIS
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
-
 
     <!-- Map area -->
     <div class="gis-wrapper position-relative flex-grow-1">
@@ -48,7 +53,7 @@
             <div id="layerListContainer"></div>
         </div>
 
-        <!-- popovers -->
+        <!-- Popovers -->
         <div id="basemapPopover" class="gis-popover shadow d-none"></div>
         <div id="legendPopover" class="gis-popover shadow d-none"></div>
     </div>
@@ -57,390 +62,197 @@
 <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
 
 <script>
-(function () {
-  let currentLang = "AR";
+    (function () {
+      "use strict";
 
-  function init() {
-    require([
-      "esri/Map","esri/views/MapView",
-      "esri/widgets/Zoom","esri/widgets/Home","esri/widgets/Locate","esri/widgets/ScaleBar",
-      "esri/widgets/BasemapGallery","esri/widgets/Legend",
-      "esri/widgets/Search","esri/widgets/Compass",
-      "esri/config","esri/geometry/Extent","esri/geometry/Point"
-    ], function (
-      Map, MapView,
-      Zoom, Home, Locate, ScaleBar,
-      BasemapGallery, Legend,
-      Search, Compass,
-      esriConfig, Extent, Point
-    ) {
-      if (window.__ESRI_API_KEY) esriConfig.apiKey = window.__ESRI_API_KEY;
+      let currentLang = "AR";
 
-      const map = new Map({ basemap: "satellite" });
+      // --- helpers -----------------------------------------------------
+      const qs = (id) => document.getElementById(id);
+      const toggle = (el) => el.classList.toggle("d-none");
 
-      // Jeddah extent
-      const jeddahExtent = new Extent({
-        xmin: 38.95, ymin: 21.30, xmax: 39.55, ymax: 21.75, spatialReference: 4326
-      });
+      function loadArcGIS(callback) {
+        if (window.require) { callback(); return; }
+        const s = document.createElement("script");
+        s.src = "https://js.arcgis.com/4.29/";
+        s.onload = callback;
+        document.head.appendChild(s);
+      }
 
-    const view = new MapView({
-      container: "mapView",
-      map,
-      center: [39.197, 21.543],
-      zoom: 11,
-      ui: { components: [] },
-      constraints: { rotationEnabled: true },
-      padding: { top: 0 } // <- no hard-coded number
-    });
+      // --- main init ---------------------------------------------------
+      function init() {
+        require([
+          "esri/Map","esri/views/MapView",
+          "esri/widgets/Zoom","esri/widgets/Home","esri/widgets/Locate","esri/widgets/ScaleBar",
+          "esri/widgets/BasemapGallery","esri/widgets/Legend",
+          "esri/widgets/Search","esri/widgets/Compass",
+          "esri/config","esri/geometry/Extent","esri/geometry/Point"
+        ], function (
+          Map, MapView,
+          Zoom, Home, Locate, ScaleBar,
+          BasemapGallery, Legend,
+          Search, Compass,
+          esriConfig, Extent, Point
+        ) {
 
-    // compute navbar height and apply to map + CSS var
-    function applyTopPadding(){
-      const nav = document.querySelector('.gis-topbar');
-      const h = nav ? nav.offsetHeight : 64;
-      // update esri view padding so widgets don’t hide under the bar
-      view.padding = { top: h, left: 0, right: 0, bottom: 0 };
-      // update CSS var so the map element height fits the viewport
-      document.documentElement.style.setProperty('--gis-nav-h', `${h}px`);
-    }
+          if (window.__ESRI_API_KEY) esriConfig.apiKey = window.__ESRI_API_KEY;
 
-    view.when(() => {
-      applyTopPadding();
-      window.addEventListener('resize', applyTopPadding);
-    });
+          // Map + view
+          const map  = new Map({ basemap: "satellite" });
+          const view = new MapView({
+            container: "mapView",
+            map,
+            center: [39.197, 21.543],
+            zoom: 11,
+            ui: { components: [] },
+            constraints: { rotationEnabled: true },
+            padding: { top: 0 } // dynamic later
+          });
 
-      // Left-side built-in widgets
-      view.ui.add(new Zoom({ view }), "top-left");
-      view.ui.add(new Home({ view }), "top-left");
-      view.ui.add(new Locate({ view }), "top-left");
-      view.ui.add(new Compass({ view }), "top-left");
-      view.ui.add(new ScaleBar({ view, unit: "metric" }), "bottom-left");
+          // Jeddah extent for search bias
+          const jeddahExtent = new Extent({
+            xmin: 38.95, ymin: 21.30, xmax: 39.55, ymax: 21.75, spatialReference: 4326
+          });
 
-      // Single search (address / place) – biased to Jeddah
-      const generalSearch = new Search({
-        view,
-        container: "leftStreetAnchor",
-        includeDefaultSources: true,
-        suggestionsEnabled: true,
-        searchAllEnabled: true,
-        locationEnabled: true,
-        searchExtent: jeddahExtent,
-        location: new Point({ longitude: 39.197, latitude: 21.543 })
-      });
-
-      // ---------- Custom static layer list (UI only) ----------
-      const staticLayers = [
-        { title: "البلاغات", visible: true },
-        { title: "طبقة تقييم الشوارع الرئيسية", visible: true },
-        { title: "طبقة تقييم الشوارع الفرعية", visible: true },
-        { title: "طبقة المقاطع", visible: true },
-        { title: "طبقة الشوارع الفرعية", visible: true },
-        { title: "طبقة تقييم المناطق", visible: true },
-        { title: "طبقة المناطق", visible: true },
-        { title: "طبقة الاحياء", visible: true },
-        { title: "طبقة البلديات", visible: true }
-      ];
-
-      view.when(() => {
-        const container = document.getElementById("layerListContainer");
-        container.innerHTML = staticLayers.map((layer, index) => `
-          <div class="custom-layer-item" data-index="${index}">
-            <div class="layer-item-content">
-              <button class="layer-toggle-btn" data-visible="${layer.visible}">
-                <i class="bi ${layer.visible ? 'bi-eye' : 'bi-eye-slash'}"></i>
-              </button>
-              <span class="layer-title">${layer.title}</span>
-              <div class="layer-indicator ${layer.visible ? 'visible' : ''}"></div>
-            </div>
-          </div>
-        `).join('');
-
-        container.addEventListener('click', (e) => {
-          const btn = e.target.closest('.layer-toggle-btn');
-          if (!btn) return;
-          const item = btn.closest('.custom-layer-item');
-          const index = parseInt(item.dataset.index);
-          staticLayers[index].visible = !staticLayers[index].visible;
-
-          const icon = btn.querySelector('i');
-          const indicator = item.querySelector('.layer-indicator');
-          if (staticLayers[index].visible) {
-            icon.className = 'bi bi-eye';
-            indicator.classList.add('visible');
-            btn.dataset.visible = 'true';
-          } else {
-            icon.className = 'bi bi-eye-slash';
-            indicator.classList.remove('visible');
-            btn.dataset.visible = 'false';
+          // Keep widgets clear of the top navbar – also expose CSS var for height
+          function applyTopPadding() {
+            const nav = document.querySelector(".gis-topbar");
+            const h = nav ? nav.offsetHeight : 64;
+            view.padding = { top: h, left: 0, right: 0, bottom: 0 };
+            document.documentElement.style.setProperty("--gis-nav-h", `${h}px`);
           }
-        });
-      });
 
-      // RIGHT popovers
-      const basePopover = document.getElementById("basemapPopover");
-      const legendPopover = document.getElementById("legendPopover");
-      new BasemapGallery({ view, container: basePopover });
-      new Legend({ view, container: legendPopover });
+          // Built-in widgets (left)
+          view.ui.add(new Zoom({ view }),    "top-left");
+          view.ui.add(new Home({ view }),    "top-left");
+          view.ui.add(new Locate({ view }),  "top-left");
+          view.ui.add(new Compass({ view }), "top-left");
+          view.ui.add(new ScaleBar({ view, unit: "metric" }), "bottom-left");
 
-      function toggle(el){ el.classList.toggle("d-none"); }
-      document.getElementById("btnBasemap").onclick = () => {
-        legendPopover.classList.add("d-none"); toggle(basePopover);
-      };
-      document.getElementById("btnLegend").onclick = () => {
-        basePopover.classList.add("d-none"); toggle(legendPopover);
-      };
-      document.addEventListener("click", (e)=>{
-        const ids = ["btnBasemap","basemapPopover","btnLegend","legendPopover"];
-        if (!ids.some(id => e.target.closest && e.target.closest("#"+id))) {
-          basePopover.classList.add("d-none"); legendPopover.classList.add("d-none");
-        }
-      });
+          // Search (left)
+          const generalSearch = new Search({
+            view,
+            container: "leftStreetAnchor",
+            includeDefaultSources: true,
+            suggestionsEnabled: true,
+            searchAllEnabled: true,
+            locationEnabled: true,
+            searchExtent: jeddahExtent,
+            location: new Point({ longitude: 39.197, latitude: 21.543 })
+          });
 
-      // Layer panel toggle
-      const panel = document.getElementById("layerPanel");
-      const toggleBtn = document.getElementById("btnToggleLayerPanel");
-      const toggleIcon = toggleBtn.querySelector("i");
-      toggleBtn.onclick = () => {
-        panel.classList.toggle("collapsed");
-        toggleIcon.className = panel.classList.contains("collapsed")
-          ? "bi bi-chevron-double-left"
-          : "bi bi-chevron-double-right";
-      };
+          // ---------- Static (UI-only) layer list ----------
+          const STATIC_LAYERS = [
+            { title: "البلاغات", visible: true },
+            { title: "طبقة تقييم الشوارع الرئيسية", visible: true },
+            { title: "طبقة تقييم الشوارع الفرعية", visible: true },
+            { title: "طبقة المقاطع", visible: true },
+            { title: "طبقة الشوارع الفرعية", visible: true },
+            { title: "طبقة تقييم المناطق", visible: true },
+            { title: "طبقة المناطق", visible: true },
+            { title: "طبقة الاحياء", visible: true },
+            { title: "طبقة البلديات", visible: true }
+          ];
 
-      // --------- Responsive helpers ---------
-      function setTopPadding() {
-        const anchor = document.querySelector('.left-street-anchor');
-        const h = anchor ? anchor.offsetHeight : 0;
-        view.padding = { top: Math.max(60, h + 16), left: 0, right: 0, bottom: 0 };
-      }
+          view.when(() => {
+            // Build the layer list
+            const container = qs("layerListContainer");
+            container.innerHTML = STATIC_LAYERS.map((layer, i) => `
+              <div class="custom-layer-item" data-index="${i}">
+                <div class="layer-item-content">
+                  <button class="layer-toggle-btn" data-visible="${layer.visible}">
+                    <i class="bi ${layer.visible ? "bi-eye" : "bi-eye-slash"}"></i>
+                  </button>
+                  <span class="layer-title">${layer.title}</span>
+                  <div class="layer-indicator ${layer.visible ? "visible" : ""}"></div>
+                </div>
+              </div>
+            `).join("");
 
-      function setPanelForBreakpoint() {
-        const isTablet = window.innerWidth <= 992;
-        const isMobile = window.innerWidth <= 576;
-        if (isTablet || isMobile) {
-          panel.classList.add('collapsed');
-          if (toggleIcon) toggleIcon.className = 'bi bi-chevron-double-left';
-        }
-        setTopPadding();
-      }
+            // Toggle visibility (UI only)
+            container.addEventListener("click", (e) => {
+              const btn  = e.target.closest(".layer-toggle-btn");
+              if (!btn) return;
 
-      view.when(() => {
-        setPanelForBreakpoint();
-        window.addEventListener('resize', setPanelForBreakpoint);
-      });
+              const item   = btn.closest(".custom-layer-item");
+              const index  = parseInt(item.dataset.index, 10);
+              const state  = STATIC_LAYERS[index].visible = !STATIC_LAYERS[index].visible;
+              const icon   = btn.querySelector("i");
+              const dot    = item.querySelector(".layer-indicator");
 
-      // Language toggle
-      function setLang(lang){
-        currentLang = lang;
-        document.getElementById("langLabel").textContent = lang;
-        generalSearch.allPlaceholder = (lang === "AR")
-          ? "ابحث عن عنوان أو مكان"
-          : "Find address or place";
-      }
-      document.getElementById("langBtn").onclick = () => setLang(currentLang==="AR"?"EN":"AR");
-      setLang("AR");
-    });
-  }
+              icon.className = state ? "bi bi-eye" : "bi bi-eye-slash";
+              dot.classList.toggle("visible", state);
+              btn.dataset.visible = String(state);
+            });
 
-  if (window.require) init();
-  else { const s=document.createElement("script"); s.src="https://js.arcgis.com/4.29/"; s.onload=init; document.head.appendChild(s); }
-})();
-</script>
+            // Popovers (right)
+            const basePopover   = qs("basemapPopover");
+            const legendPopover = qs("legendPopover");
+            new BasemapGallery({ view, container: basePopover });
+            new Legend({ view, container: legendPopover });
 
-<style>
-/* ---------- Shared style ---------- */
-.nav-btn {
-  font-weight: 500; transition: .3s;
-  border: 1px solid rgba(255,255,255,.3);
-  background: rgba(255,255,255,.15);
-  color: #fff; backdrop-filter: blur(10px);
-}
-.nav-btn:hover, .nav-btn.active {
-  background: rgba(255,255,255,.25);
-  border-color: rgba(255,255,255,.5);
-  color: #fff; transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,.2);
-}
-.language-toggle{ font-weight: 600; border: 1px solid rgba(255,255,255,.4);
-  background: rgba(255,255,255,.15); color:#fff; min-width:70px; }
-.logo-container{ box-shadow: 0 2px 8px rgba(0,0,0,.15); transition: transform .3s; }
-.logo-container:hover{ transform: scale(1.05); }
+            qs("btnBasemap").onclick = () => { legendPopover.classList.add("d-none"); toggle(basePopover); };
+            qs("btnLegend").onclick  = () => { basePopover.classList.add("d-none");  toggle(legendPopover); };
 
-:root{ --nav-h-desktop: 64px; --nav-h-mobile: 56px; }
+            document.addEventListener("click", (e) => {
+              const ids = ["btnBasemap","basemapPopover","btnLegend","legendPopover"];
+              const clickedInside = ids.some(id => e.target.closest && e.target.closest("#" + id));
+              if (!clickedInside) { basePopover.classList.add("d-none"); legendPopover.classList.add("d-none"); }
+            });
 
-.gis-wrapper{ position: relative; width: 100%; }
-.gis-map{ width: 100%; height: calc(100vh - var(--nav-h-desktop)); min-height: 480px; background:#e9eef3; }
+            // Layer panel toggle
+            const panel     = qs("layerPanel");
+            const toggleBtn = qs("btnToggleLayerPanel");
+            const icon      = toggleBtn.querySelector("i");
 
-/* Upper search anchor */
-.left-street-anchor{
-  position: absolute; top: 12px; left: 10px;
-  width: 200px; z-index: 130;
-}
-.esri-search{ width: 200px !important; max-width: 100%; }
+            toggleBtn.onclick = () => {
+              panel.classList.toggle("collapsed");
+              icon.className = panel.classList.contains("collapsed")
+                ? "bi bi-chevron-double-left"
+                : "bi bi-chevron-double-right";
+            };
 
-/* RIGHT: layer panel */
-.gis-layer-panel{
-  position: absolute; top: calc(var(--nav-h-desktop) + 0px); right: 56px;
-  width: 360px; max-height: calc(100vh - 120px); overflow: auto;
-  background: #fff; border-radius: 8px; padding: 0;
-  border: 1px solid rgba(0,0,0,.1); z-index: 100; transition: transform .25s ease;
-}
-
-        .gis-layer-panel.collapsed {
-            transform: translateX(120%); /* slide the whole panel out, regardless of its width */
-            opacity: 0; /* avoid ghosting on some browsers */
-            pointer-events: none; /* no clicks while hidden */
-        }
-
-    #layerListContainer {
-        min-height: 200px;
-    }
-
-/* RIGHT: small top tray */
-.gis-right-toptray{
-  position: absolute; top: 10px; right: 10px; display:flex; gap:8px;
-  background:#fff; border:1px solid rgba(0,0,0,.1); border-radius:6px; padding:6px; z-index:120;
-}
-.tray-btn{ width: 40px; height: 40px; border:1px solid rgba(0,0,0,.15); background:#fff; border-radius:4px; cursor:pointer; transition:.2s; }
-.tray-btn:hover{ background:#f8f9fa; transform: scale(1.05); }
-
-/* RIGHT: vertical tools */
-.gis-right-tools{
-  position: absolute; top: 64px; right: 10px; display:flex; flex-direction:column; gap:10px; z-index:120;
-}
-.tool-btn{ width: 40px; height: 40px; border:1px solid rgba(0,0,0,.15);
-  background:#fff; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,.08); cursor:pointer; transition:.2s; }
-.tool-btn:hover{ background:#f8f9fa; transform: scale(1.05); }
-
-/* popovers */
-.gis-popover{
-  position: absolute; top: 56px; right: 10px; width: 320px; max-height: 60vh;
-  overflow: auto; background: #fff; border: 1px solid rgba(0,0,0,.12);
-  border-radius: 8px; padding: 8px; z-index: 150;
-}
-
-/* Esri widgets polish */
-.esri-widget, .esri-layer-list, .esri-search{
-  border-radius: 8px !important;
-  border: 1px solid rgba(0,0,0,.1) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08) !important;
-}
-.esri-layer-list{ border: none !important; box-shadow: none !important; }
-
-/* Custom layer list styling */
-.custom-layer-item{ border-bottom:1px solid #e0e0e0; transition: background-color .2s; }
-.custom-layer-item:hover{ background-color:#f5f5f5; }
-.layer-item-content{ display:flex; align-items:center; padding:12px 16px; gap:12px; }
-.layer-toggle-btn{ border:none; background:none; cursor:pointer; color:#666; font-size:18px; padding:4px; display:flex; align-items:center; transition: color .2s; }
-.layer-toggle-btn:hover{ color:#2c3e50; }
-.layer-title{ flex:1; font-size:14px; color:#333; font-weight:500; }
-.layer-indicator{ width:8px; height:8px; border-radius:50%; background-color:#ccc; transition: background-color .2s; }
-.layer-indicator.visible{ background-color:#3b82f6; }
-
-/* ---------- Tablet (≤ 992px) ---------- */
-@@media (max-width: 992px){
-  .left-street-anchor{ width: 60vw; top: 10px; left: 10px; }
-
-        .gis-layer-panel {
-            right: 12px;
-            width: 70vw;
-        }
-
-        .gis-right-toptray {
-            right: 12px;
-        }
-  .gis-right-tools{ right: 12px; }
-    .left-street-anchor {
-        width: 60vw;
-        }
-
-    .esri-search {
-         width: 60vw !important;
-    }
-}
-
-/* ---------- Mobile (≤ 576px) ---------- */
-@@media (max-width: 576px){
-  .gis-map{ height: calc(100vh - var(--nav-h-mobile)); }
-    .left-street-anchor{ width: calc(100vw - 20px); }
-  .esri-search{ width: calc(60vw - 20px) !important; }
-  .gis-right-toptray{ right:10px; top:10px; gap:6px; padding:4px; }
-  .tray-btn, .tool-btn{ width:36px; height:36px; }
-
-  /* Tools move to bottom-right for thumb reach */
-  .gis-right-tools{
-    position:absolute; bottom:12px; top:auto; right:10px; flex-direction:row; gap:8px;
-  }
-
-  /* Layer panel behaves like a sheet */
-        .gis-layer-panel {
-            top: 80px;
-            right: 0;
-            left: 0;
-            margin: 0 auto;
-            width: calc(100vw - 16px);
-            max-height: calc(100vh - 110px);
-            border-radius: 10px;
-        }
-        }
-    /* --- Solid dark GIS navbar (no white strip) --- */
-    .gis-topbar {
-        background: linear-gradient(135deg,#34495e 0%,#2c3e50 100%) !important;
-        border: 0;
-        border-bottom: 3px solid rgba(0,0,0,.35); /* the dark line you want */
-        box-shadow: none !important;
-        position: sticky;
-        top: 0;
-        z-index: 1100;
-        min-height: 64px; /* fallback; JS will set exact height */
-    }
-
-        /* keep toggler icon visible on dark bg */
-        .gis-topbar .navbar-toggler {
-            border: 0;
-        }
-
-        .gis-topbar .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,.95)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-        /* nav buttons: transparent, no milky pill */
-        .gis-topbar .nav-btn {
-            color: #fff;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,.25);
-            border-radius: .5rem;
-            transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
-        }
-
-            .gis-topbar .nav-btn:hover,
-            .gis-topbar .nav-btn.active {
-                background: rgba(255,255,255,.12);
-                border-color: rgba(255,255,255,.45);
-                transform: translateY(-2px);
-                box-shadow: 0 4px 10px rgba(0,0,0,.25);
+            // Additional top padding based on the left search anchor height
+            function setTopPaddingFromSearch() {
+              const anchor = document.querySelector(".left-street-anchor");
+              const h = anchor ? anchor.offsetHeight : 0;
+              view.padding = { top: Math.max(60, h + 16), left: 0, right: 0, bottom: 0 };
             }
 
-        /* remove the white halo behind the logo */
-        .gis-topbar .logo-container {
-            background: transparent !important;
-            box-shadow: none !important;
-        }
+            // Responsive panel behavior
+            function setPanelForBreakpoint() {
+              const isTablet = window.innerWidth <= 992;
+              const isMobile = window.innerWidth <= 576;
+              if (isTablet || isMobile) {
+                panel.classList.add("collapsed");
+                icon.className = "bi bi-chevron-double-left";
+              }
+              setTopPaddingFromSearch();
+            }
 
-    /* map height uses the real navbar height; JS will set this var */
-    :root {
-        --gis-nav-h: 64px;
-    }
+            // First layout pass + listeners
+            applyTopPadding();
+            setPanelForBreakpoint();
+            window.addEventListener("resize", applyTopPadding);
+            window.addEventListener("resize", setPanelForBreakpoint);
+          });
 
-    .gis-map {
-        height: calc(100vh - var(--gis-nav-h));
-    }
+          // Language toggle (optional – guarded)
+          function setLang(lang) {
+            currentLang = lang;
+            const label = qs("langLabel");
+            if (label) label.textContent = lang;
 
-    /* mobile fallback */
-    @@media (max-width:576px) {
-        .gis-topbar {
-            min-height: 56px;
-        }
-    }
+            generalSearch.allPlaceholder = (lang === "AR")
+              ? "ابحث عن عنوان أو مكان"
+              : "Find address or place";
+          }
+          const langBtn = qs("langBtn");
+          if (langBtn) langBtn.onclick = () => setLang(currentLang === "AR" ? "EN" : "AR");
+          setLang("AR");
+        });
+      }
 
-    }}
-</style>
+      loadArcGIS(init);
+    })();
+</script>

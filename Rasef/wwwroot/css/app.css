@@ -1,7 +1,7 @@
 ﻿/*===================================================================
-   RASEF – Application Styles
-   Bootstrap-first, with dark mode via [data-bs-theme="dark"]
-   Keep markup using Bootstrap classes only. Any tweaks live here.
+   RASEF – Global App Styles (cleaned)
+   Keep only truly global rules here. Page/layout-specific CSS lives in
+   *.razor.css files.
 =================================================================== */
 
 /*-----------------------
@@ -146,7 +146,7 @@ a, .btn-link {
 
 /* ===================================================================
    Bootstrap 5.3 – Dark Color Mode
-   Activated by placing data-bs-theme="dark" on a wrapper (MainLayout).
+   Activated by data-bs-theme="dark" on a wrapper (MainLayout).
 =================================================================== */
 [data-bs-theme="dark"] {
     /* Core */
@@ -201,7 +201,6 @@ a, .btn-link {
             border-color: #58a6ff;
             box-shadow: 0 0 0 .25rem rgba(88,166,255,.25);
         }
-
     /* Form select caret (white) */
     [data-bs-theme="dark"] .form-select {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e6edf3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
@@ -212,7 +211,7 @@ a, .btn-link {
             color: #e6edf3;
         }
 
-    /* Input groups & list groups */
+    /* Input & list groups */
     [data-bs-theme="dark"] .input-group-text {
         background-color: #1c2128;
         border-color: #30363d;
@@ -225,7 +224,7 @@ a, .btn-link {
         color: #e6edf3;
     }
 
-    /* Tables (no global header override) */
+    /* Tables */
     [data-bs-theme="dark"] .table {
         --bs-table-bg: transparent;
         --bs-table-border-color: #30363d;
@@ -233,6 +232,16 @@ a, .btn-link {
 
     [data-bs-theme="dark"] .table-hover tbody tr:hover {
         background-color: rgba(88,166,255,.10);
+    }
+    /* Dark-mode header for Bootstrap tables */
+    [data-bs-theme="dark"] .table thead.table-light,
+    [data-bs-theme="dark"] .table .table-light {
+        --bs-table-bg: #161b22;
+        --bs-table-color: #e6edf3;
+        --bs-table-border-color: #30363d;
+        background-color: var(--bs-table-bg) !important;
+        color: var(--bs-table-color) !important;
+        border-color: var(--bs-table-border-color) !important;
     }
 
     /* Buttons */
@@ -296,7 +305,7 @@ a, .btn-link {
         box-shadow: inset 0 0 0 1px #30363d;
     }
 
-    /* Validation colors in dark (keep consistency) */
+    /* Validation colors in dark */
     [data-bs-theme="dark"] .validation-message {
         color: #f85149;
     }
@@ -325,34 +334,13 @@ a, .btn-link {
             background: #4a6b8a;
         }
 
-/* ===== Universal page bg (keep pages dark) ===== */
+/* ===== Universal page bg ===== */
 html, body, .min-vh-100, .main-content, .container-fluid {
     background-color: var(--bs-body-bg) !important;
     color: var(--bs-body-color);
 }
-/* Remove the gray band behind the top bar (dark mode only) */
-[data-bs-theme="dark"] .topbar {
-    background: transparent !important;
-    border-bottom: 0 !important;
-    box-shadow: none !important;
-}
 
-    /* (optional) if you see a band from the collapse area on mobile */
-    [data-bs-theme="dark"] .topbar .navbar-collapse {
-        background: transparent !important;
-    }
-/* Dark-mode header for Bootstrap tables */
-[data-bs-theme="dark"] .table thead.table-light,
-[data-bs-theme="dark"] .table .table-light {
-    /* make the variant dark */
-    --bs-table-bg: #161b22;
-    --bs-table-color: #e6edf3;
-    --bs-table-border-color: #30363d;
-    background-color: var(--bs-table-bg) !important;
-    color: var(--bs-table-color) !important;
-    border-color: var(--bs-table-border-color) !important;
-}
-/* Card hover polish (Bootstrap-only selectors) */
+/* Card hover polish (generic) */
 .card.shadow-sm,
 .card:has(.stretched-link) {
     transition: transform .25s ease, box-shadow .25s ease;
@@ -360,328 +348,5 @@ html, body, .min-vh-100, .main-content, .container-fluid {
 
     .card.shadow-sm:hover,
     .card:has(.stretched-link):hover {
-        transform: translateY(-4px);
         box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.15) !important;
     }
-/* =======================
-   Home page styles
-   ======================= */
-
-/* Hero */
-.hero-section {
-    height: 400px;
-    margin : 0!important;
-}
-
-.hero-bg {
-    background-image: url('/css/img/jeddahcropped.JPG');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.hero-overlay {
-    background: linear-gradient(135deg, rgba(44,62,80,.5) 0%, rgba(52,152,219,.75) 100%);
-}
-/* Blend wave with current theme background (light + dark) */
-.wave-path {
-    fill: var(--bs-body-bg);
-}
-/* Reduce gap after hero */
-.hero-section + .container-fluid {
-    padding-top: 2rem;
-}
-
-/* Icons */
-.icon-xl {
-    font-size: 2.5rem;
-}
-
-.icon-circle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: 1rem;
-}
-
-.grad-blue {
-    background: linear-gradient(135deg,#3498db 0%,#2980b9 100%);
-}
-
-.grad-green {
-    background: linear-gradient(135deg,#27ae60 0%,#229954 100%);
-}
-
-.grad-orange {
-    background: linear-gradient(135deg,#e67e22 0%,#d35400 100%);
-}
-
-.grad-purple {
-    background: linear-gradient(135deg,#8e44ad 0%,#6c3483 100%);
-}
-
-/* Card hover animation */
-.home-card {
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-
-    .home-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.15) !important;
-    }
-
-/* Title color that works in both themes */
-.text-slate {
-    color: #2c3e50;
-}
-
-[data-bs-theme="dark"] .text-slate {
-    color: #e6edf3;
-}
-
-/* Fade-in animation (hero text) */
-@keyframes fadeInHome {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: none;
-    }
-}
-
-.animate-fade-in {
-    animation: fadeInHome .8s ease-out;
-}
-/* =======================
-   404 / NotFound page
-   ======================= */
-
-.error-page-container {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-    .error-page-container::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
-        background-size: 50px 50px;
-        animation: error-moveBg 20s linear infinite;
-    }
-
-@keyframes error-moveBg {
-    from {
-        transform: translate(0,0)
-    }
-
-    to {
-        transform: translate(50px,50px)
-    }
-}
-
-.error-content {
-    background-color: var(--bs-body-bg);
-    color: var(--bs-body-color);
-    border-radius: 1.5rem;
-    padding: 3rem 2rem;
-    max-width: 640px;
-    width: 100%;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-    animation: error-slideIn .6s ease-out;
-}
-
-@keyframes error-slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-30px)
-    }
-
-    to {
-        opacity: 1;
-        transform: none
-    }
-}
-
-.error-icon-wrapper {
-    margin-bottom: 2rem;
-    animation: error-bounce 2s ease-in-out infinite;
-}
-
-@keyframes error-bounce {
-    0%,100% {
-        transform: translateY(0)
-    }
-
-    50% {
-        transform: translateY(-20px)
-    }
-}
-
-.error-icon {
-    font-size: 5rem;
-    color: #f39c12;
-    filter: drop-shadow(0 4px 8px rgba(243,156,18,.3));
-}
-
-.error-code {
-    font-size: 6rem;
-    font-weight: 900;
-    line-height: 1;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.error-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--bs-body-color);
-    margin-bottom: 1rem;
-}
-
-.error-message {
-    font-size: 1.125rem;
-    color: var(--bs-secondary-color,#6c757d);
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
-}
-
-.error-actions .btn {
-    padding: .75rem 2rem;
-    font-weight: 600;
-    border-radius: .75rem;
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-
-    .error-actions .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0,0,0,.2);
-    }
-
-.error-suggestions {
-    padding-top: 2rem;
-    border-top: 1px solid var(--bs-border-color);
-}
-
-.suggestion-links {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.suggestion-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: .5rem;
-    padding: 1.25rem 1.5rem;
-    background-color: var(--bs-tertiary-bg, #f8f9fa);
-    border: 1px solid var(--bs-border-color);
-    border-radius: .75rem;
-    color: var(--bs-body-color);
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background-color .25s ease;
-    min-width: 140px;
-}
-
-    .suggestion-link:hover {
-        background-color: var(--bs-body-bg);
-        border-color: var(--bs-primary);
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,.15);
-    }
-
-    .suggestion-link i {
-        font-size: 2rem;
-        color: var(--bs-primary);
-    }
-
-    .suggestion-link span {
-        font-weight: 600;
-        font-size: .9rem;
-    }
-
-/* Dark: stronger card shadow (uses your data-bs-theme scheme) */
-[data-bs-theme="dark"] .error-content {
-    box-shadow: 0 20px 60px rgba(0,0,0,.6) !important;
-}
-
-[data-bs-theme="dark"] .suggestion-link:hover {
-    box-shadow: 0 8px 20px rgba(0,0,0,.4);
-}
-
-/* Responsive */
-@media (max-width:768px) {
-    .error-content {
-        padding: 2rem 1.5rem;
-    }
-
-    .error-code {
-        font-size: 4rem;
-    }
-
-    .error-title {
-        font-size: 1.5rem;
-    }
-
-    .error-message {
-        font-size: 1rem;
-    }
-
-    .error-icon {
-        font-size: 4rem;
-    }
-
-    .error-actions {
-        flex-direction: column;
-    }
-
-        .error-actions .btn {
-            width: 100%;
-        }
-
-    .suggestion-links {
-        flex-direction: column;
-    }
-
-    .suggestion-link {
-        width: 100%;
-    }
-}
-/* Full-bleed hero: spans entire viewport width, ignoring container padding */
-.hero-fullbleed{
-  width:100vw;
-  position:relative;
-  left:50%;
-  right:50%;
-  margin-left:-50vw;
-  margin-right:-50vw;
-  margin-top:0; /* no margin above hero */
-}
-
-/* Ensure hero touches navbar (remove any top spacing from layout) */
-.topbar + .hero-fullbleed{ margin-top:0 !important; }
-
-/* Optional: if your navbar adds a thin separator you don't want */
-.topbar{ border-bottom:0; box-shadow:none; }
-
-/* Wave should blend with page background in both themes (you already have this) */
-.wave-path{ fill:var(--bs-body-bg); }

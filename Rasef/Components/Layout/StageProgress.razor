@@ -1,34 +1,36 @@
-﻿@using System.Globalization
+﻿@using Microsoft.Extensions.Localization
+@using Rasef.Resources.Localization
+@inject IStringLocalizer<Strings> L
 
-@code {
-    [Parameter] public int CurrentStageIndex { get; set; } = 1; // 1..7
-    [Parameter] public string Lang { get; set; } = "AR";        // "AR" or "EN"
-
-    private readonly string[] StagesEn = new[]
-    {
-        "Consultant","Project Manager","Department Manager","Municipality Head","Excavations","General Manager","Contractor"
-    };
-    private readonly string[] StagesAr = new[]
-    {
-        "الاستشاري","مدير المشروع","مدير الإدارة","رئيس البلدية","الحفريات","مدير عام الإدارة","المقاول"
-    };
-
-    private IEnumerable<string> Labels => Lang == "AR" ? StagesAr : StagesEn;
-    private string Percent => Math.Clamp((int)Math.Round((CurrentStageIndex / 7.0) * 100), 0, 100) + "%";
-}
 <div class="mb-3">
     <div class="progress" role="progressbar" aria-valuenow="@Percent" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-bar" style="width:@Percent"></div>
     </div>
+
     <div class="d-flex justify-content-between flex-wrap gap-2 mt-2">
-        @{
-            var i = 0;
-            foreach (var s in Labels)
-            {
-                i++;
-                var active = i <= CurrentStageIndex;
-                <span class="badge @(active ? "bg-primary" : "bg-secondary")">@s</span>
-            }
+        @for (int i = 0; i < Labels.Count; i++)
+        {
+            var active = (i + 1) <= CurrentStageIndex;
+            <span class="badge @(active ? "bg-primary" : "bg-secondary")">@Labels[i]</span>
         }
     </div>
 </div>
+
+@code {
+    [Parameter] public int CurrentStageIndex { get; set; } = 1; // 1..7
+
+    // take the string value of each localized string
+    private IReadOnlyList<string> Labels => new[]
+    {
+        L["consultant"].Value,
+        L["projectManager"].Value,
+        L["departmentManager"].Value,
+        L["municipalityHead"].Value,
+        L["excavations"].Value,
+        L["generalManager"].Value,
+        L["contractor"].Value
+    };
+
+    private string Percent =>
+        Math.Clamp((int)Math.Round((CurrentStageIndex / 7.0) * 100), 0, 100) + "%";
+}

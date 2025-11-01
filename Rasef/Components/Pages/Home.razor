@@ -1,58 +1,26 @@
 ﻿@page "/home"
+@using Rasef.Resources.Localization
 @layout MainLayout
+@inject IStringLocalizer<Strings> L
+@inject CultureService Culture
+@implements IDisposable
 
-@code {
-    [CascadingParameter] public string CurrentLanguage { get; set; } = "AR";
-    private readonly Dictionary<string, Dictionary<string, string>> t = new()
-    {
-        ["AR"] = new()
-        {
-            ["systemTitle"] = "نــظــام راصــف",
-            ["systemSubtitle"] = "إدارة وصيانة شبكات الطرق",
-            ["agency"] = "وزارة النقل والخدمات اللوجستية",
-            ["dashboard"] = "لوحة القيادة",
-            ["dashboardDesc"] = "عرض المؤشرات العامة",
-            ["projectManagement"] = "إدارة المشاريع",
-            ["projectDesc"] = "تخطيط ومتابعة التنفيذ",
-            ["reports"] = "التقارير",
-            ["reportsDesc"] = "تقارير تفصيلية وتحليلات دقيقة",
-            ["userManagement"] = "إدارة المستخدمين",
-            ["userDesc"] = "التحكم في الصلاحيات والمستخدمين",
-            ["workorder"] = "أوامر العمل",
-            ["workorderDesc"] = "إدارة ومتابعة أوامر العمل"
-        },
-        ["EN"] = new()
-        {
-            ["systemTitle"] = "RASEF System",
-            ["systemSubtitle"] = "Road Network Maintenance & Management",
-            ["agency"] = "Ministry of Transport & Logistics",
-            ["dashboard"] = "Dashboard",
-            ["dashboardDesc"] = "View general KPIs",
-            ["projectManagement"] = "Project Management",
-            ["projectDesc"] = "Plan and track execution",
-            ["reports"] = "Reports",
-            ["reportsDesc"] = "Detailed reports and analytics",
-            ["userManagement"] = "User Management",
-            ["userDesc"] = "Manage users and permissions",
-            ["workorder"] = "Work Orders",
-            ["workorderDesc"] = "Manage and track work orders",
+<!-- HERO -->
+<div class="position-relative mx-n3 mx-sm-n4 mx-md-n5 hero-section"
+     dir="@(Culture.IsArabic ? "rtl" : "ltr")">
 
-        }
-    };
-    string T(string k) => t[CurrentLanguage].TryGetValue(k, out var v) ? v : k;
-}
-
-<!-- HERO (edge-to-edge; no white gutters) -->
-<div class="position-relative mx-n3 mx-sm-n4 mx-md-n5 hero-section">
     <div class="position-absolute w-100 h-100 hero-bg"></div>
     <div class="position-absolute w-100 h-100 hero-overlay"></div>
 
     <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center text-white px-3">
         <div class="text-center animate-fade-in">
-            <div class="mb-4"><i class="bi bi-laptop icon-xl" style="opacity:.9"></i></div>
-            <h1 class="display-5 fw-bold mb-3">@T("systemTitle")</h1>
-            <h2 class="h4 mb-4 fw-normal">@T("systemSubtitle")</h2>
-            <p class="lead mb-0 opacity-75">@T("agency")</p>
+            <div class="mb-4">
+                <i class="bi bi-laptop icon-xl" style="opacity:.9"></i>
+            </div>
+
+            <h1 class="display-5 fw-bold mb-3">@L["systemTitle"]</h1>
+            <h2 class="h4 mb-4 fw-normal">@L["systemSubtitle"]</h2>
+            <p class="lead mb-0 opacity-75">@L["agency"]</p>
         </div>
     </div>
 
@@ -65,15 +33,18 @@
 </div>
 
 <!-- CARDS -->
-<div class="container-fluid py-5">
+<div class="container-fluid py-5" dir="@(Culture.IsArabic ? "rtl" : "ltr")">
     <div class="row g-4">
+
         <div class="col-12 col-sm-6 col-lg-3">
             <div class="card home-card position-relative border-0 shadow-sm h-100 rounded-4">
                 <div class="card-body text-center p-4">
-                    <div class="mb-3 icon-circle grad-blue"><i class="bi bi-speedometer2 text-white icon-xl"></i></div>
-                    <h5 class="card-title fw-bold mb-3 text-slate">@T("dashboard")</h5>
-                    <p class="text-muted small mb-0">@T("dashboardDesc")</p>
-                    <a href="/dashboard" class="stretched-link" aria-label="@T("dashboard")"></a>
+                    <div class="mb-3 icon-circle grad-blue">
+                        <i class="bi bi-speedometer2 text-white icon-xl"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3 text-slate">@L["dashboard"]</h5>
+                    <p class="text-muted small mb-0">@L["dashboardDesc"]</p>
+                    <a href="/dashboard" class="stretched-link" aria-label="@(L["dashboard"])"></a>
                 </div>
             </div>
         </div>
@@ -81,11 +52,12 @@
         <div class="col-12 col-sm-6 col-lg-3">
             <div class="card home-card position-relative border-0 shadow-sm h-100 rounded-4">
                 <div class="card-body text-center p-4">
-                    <div class="mb-3 icon-circle grad-green"><i class="bi bi-check-circle text-white icon-xl"></i></div>
-                    <h5 class="card-title fw-bold mb-3 text-slate">@T("workorder")</h5>
-                    <p class="text-muted small mb-0">@T("workorderDesc")</p>
-                    <!-- Link to workflow -->
-                    <a href="/workorder/workflow" class="stretched-link" aria-label="@T("workorder")"></a>
+                    <div class="mb-3 icon-circle grad-green">
+                        <i class="bi bi-check-circle text-white icon-xl"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3 text-slate">@L["workOrder"]</h5>
+                    <p class="text-muted small mb-0">@L["workorderDesc"]</p>
+                    <a href="/workorder/workflow" class="stretched-link" aria-label="@(L["workOrder"])"></a>
                 </div>
             </div>
         </div>
@@ -93,10 +65,12 @@
         <div class="col-12 col-sm-6 col-lg-3">
             <div class="card home-card position-relative border-0 shadow-sm h-100 rounded-4">
                 <div class="card-body text-center p-4">
-                    <div class="mb-3 icon-circle grad-orange"><i class="bi bi-clipboard-data text-white icon-xl"></i></div>
-                    <h5 class="card-title fw-bold mb-3 text-slate">@T("reports")</h5>
-                    <p class="text-muted small mb-0">@T("reportsDesc")</p>
-                    <a href="/reports" class="stretched-link" aria-label="@T("reports")"></a>
+                    <div class="mb-3 icon-circle grad-orange">
+                        <i class="bi bi-clipboard-data text-white icon-xl"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3 text-slate">@L["reports"]</h5>
+                    <p class="text-muted small mb-0">@L["reportsDesc"]</p>
+                    <a href="/reports" class="stretched-link" aria-label="@(L["reports"])"></a>
                 </div>
             </div>
         </div>
@@ -104,12 +78,35 @@
         <div class="col-12 col-sm-6 col-lg-3">
             <div class="card home-card position-relative border-0 shadow-sm h-100 rounded-4">
                 <div class="card-body text-center p-4">
-                    <div class="mb-3 icon-circle grad-purple"><i class="bi bi-people text-white icon-xl"></i></div>
-                    <h5 class="card-title fw-bold mb-3 text-slate">@T("userManagement")</h5>
-                    <p class="text-muted small mb-0">@T("userDesc")</p>
-                    <a href="/users" class="stretched-link" aria-label="@T("userManagement")"></a>
+                    <div class="mb-3 icon-circle grad-purple">
+                        <i class="bi bi-people text-white icon-xl"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3 text-slate">@L["userManagement"]</h5>
+                    <p class="text-muted small mb-0">@L["userDesc"]</p>
+                    <a href="/users" class="stretched-link" aria-label="@(L["userManagement"])"></a>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        // Subscribe to culture changes
+        Culture.OnChange += HandleCultureChanged;
+    }
+
+    private void HandleCultureChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from culture changes
+        Culture.OnChange -= HandleCultureChanged;
+    }
+}

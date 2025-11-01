@@ -1,0 +1,160 @@
+/* --- Buttons & icons spacing --- */
+.btn .bi {
+    vertical-align: -0.125em;
+}
+
+/* Subtle hover feedback (consistent with app) */
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+}
+
+/* --- Card headers --- */
+.card-header {
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+    border-bottom-color: var(--bs-border-color);
+}
+
+/* --- Stat cards (top summary tiles) --- */
+.stat-card .stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: .5rem;
+    font-size: 1.15rem;
+}
+
+/* --- Badge + icon alignment --- */
+.badge .bi {
+    vertical-align: middle;
+    margin-inline-end: .25rem;
+}
+
+/* --- Tables polish (BOQ / history) --- */
+.table thead th {
+    white-space: nowrap;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+/* --- Attachments (generic tiles if you use cards/list) --- */
+.attachment-tile {
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    padding: .75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+    .attachment-tile:hover {
+        background-color: var(--bs-tertiary-bg, #f8f9fa);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.06);
+        transform: translateY(-1px);
+    }
+
+.attachment-name {
+    font-weight: 600;
+}
+
+.attachment-meta {
+    color: var(--bs-secondary-color, #6c757d);
+    font-size: .875rem;
+}
+
+/* --- Workflow history timeline (if you render a list) --- */
+.history-list {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.history-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: .75rem;
+    padding-block: .5rem;
+    position: relative;
+}
+
+    .history-item::before {
+        content: "";
+        grid-column: 1;
+        justify-self: center;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--bs-primary);
+        margin-top: .35rem;
+    }
+
+    .history-item::after {
+        content: "";
+        position: absolute;
+        left: 13px;
+        top: calc(10px + .35rem);
+        bottom: -.5rem;
+        width: 2px;
+        background: var(--bs-border-color);
+    }
+
+    .history-item:last-child::after {
+        display: none;
+    }
+
+.history-meta {
+    color: var(--bs-secondary-color, #6c757d);
+    font-size: .875rem;
+}
+
+/* --- Print styles (for window.print) --- */
+@media print {
+    /* Hide navbars, buttons, and non-essential chrome */
+    .topbar,
+    nav,
+    .navbar,
+    .btn,
+    .card-footer,
+    .pagination,
+    .gis-topbar {
+        display: none !important;
+    }
+
+    /* Flatten cards and ensure readable contrast */
+    .card {
+        box-shadow: none !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border-color: #999 !important;
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    body,
+    html {
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    /* Tables fully expand */
+    .table {
+        width: 100% !important;
+    }
+
+    /* Avoid URL suffix printing after anchors */
+    a[href]::after {
+        content: "" !important;
+    }
+}
+
+/* --- Small screens: make action groups wrap nicely --- */
+@media (max-width: 576px) {
+    .card-header h5 {
+        font-size: 1rem;
+    }
+}

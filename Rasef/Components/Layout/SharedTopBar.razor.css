@@ -1,0 +1,70 @@
+/* Light (default) */
+.topbar {
+    background: #ffffff;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+    .topbar .nav-btn,
+    .topbar .theme-toggle,
+    .topbar .language-toggle,
+    .topbar .logout-btn {
+        color: #0d1117;
+        background: rgba(0, 0, 0, .04);
+        border: 0;
+        transition: background-color .2s ease, color .2s ease, transform .15s ease, box-shadow .2s ease;
+    }
+
+        .topbar .nav-btn:hover,
+        .topbar .theme-toggle:hover,
+        .topbar .language-toggle:hover,
+        .topbar .logout-btn:hover {
+            background: rgba(0, 0, 0, .08);
+        }
+
+    /* Toggler (light) */
+    .topbar .navbar-toggler {
+        border: 0;
+    }
+
+    .topbar .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(13,17,23,.85)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+.logo-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dark mode overrides (no :global) */
+[data-bs-theme="dark"] .topbar {
+    background: transparent !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}
+
+    [data-bs-theme="dark"] .topbar .nav-btn,
+    [data-bs-theme="dark"] .topbar .theme-toggle,
+    [data-bs-theme="dark"] .topbar .language-toggle,
+    [data-bs-theme="dark"] .topbar .logout-btn {
+        color: #fff;
+        background: rgba(255, 255, 255, .10);
+    }
+
+        [data-bs-theme="dark"] .topbar .nav-btn:hover,
+        [data-bs-theme="dark"] .topbar .theme-toggle:hover,
+        [data-bs-theme="dark"] .topbar .language-toggle:hover,
+        [data-bs-theme="dark"] .topbar .logout-btn:hover {
+            background: rgba(255, 255, 255, .22);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,.25);
+        }
+
+    /* Toggler (dark) */
+    [data-bs-theme="dark"] .topbar .navbar-toggler {
+        border: 0;
+    }
+
+    [data-bs-theme="dark"] .topbar .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }

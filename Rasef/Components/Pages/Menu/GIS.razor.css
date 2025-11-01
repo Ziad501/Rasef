@@ -1,0 +1,267 @@
+﻿:root {
+    --nav-h-desktop: 64px;
+    --nav-h-mobile: 56px;
+    --gis-nav-h: 64px;
+}
+
+.gis-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* map height uses real navbar height; JS sets --gis-nav-h */
+.gis-map {
+    width: 100%;
+    height: calc(100vh - var(--gis-nav-h));
+    min-height: 480px;
+    background: #e9eef3;
+}
+
+/* Upper search anchor */
+.left-street-anchor {
+    position: absolute;
+    top: 12px;
+    left: 10px;
+    width: 200px;
+    z-index: 130;
+}
+
+.esri-search {
+    width: 200px !important;
+    max-width: 100%;
+}
+
+/* RIGHT: layer panel */
+.gis-layer-panel {
+    position: absolute;
+    top: calc(var(--nav-h-desktop) + 0px);
+    right: 56px;
+    width: 360px;
+    max-height: calc(100vh - 120px);
+    overflow: auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 0;
+    border: 1px solid rgba(0,0,0,.1);
+    z-index: 100;
+    transition: transform .25s ease, opacity .25s ease;
+}
+
+    .gis-layer-panel.collapsed {
+        transform: translateX(120%);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+#layerListContainer {
+    min-height: 200px;
+}
+
+/* RIGHT: small top tray */
+.gis-right-toptray {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 6px;
+    padding: 6px;
+    z-index: 120;
+}
+
+.tray-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.15);
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .tray-btn:hover {
+        background: #f8f9fa;
+        transform: scale(1.05);
+    }
+
+/* RIGHT: vertical tools */
+.gis-right-tools {
+    position: absolute;
+    top: 64px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 120;
+}
+
+.tool-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.15);
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .tool-btn:hover {
+        background: #f8f9fa;
+        transform: scale(1.05);
+    }
+
+/* popovers */
+.gis-popover {
+    position: absolute;
+    top: 56px;
+    right: 10px;
+    width: 320px;
+    max-height: 60vh;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.12);
+    border-radius: 8px;
+    padding: 8px;
+    z-index: 150;
+}
+
+/* Esri widgets polish */
+.esri-widget, .esri-layer-list, .esri-search {
+    border-radius: 8px !important;
+    border: 1px solid rgba(0,0,0,.1) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08) !important;
+}
+
+.esri-layer-list {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Custom layer list styling */
+.custom-layer-item {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color .2s;
+}
+
+    .custom-layer-item:hover {
+        background-color: #f5f5f5;
+    }
+
+.layer-item-content {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+}
+
+.layer-toggle-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #666;
+    font-size: 18px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: color .2s;
+}
+
+    .layer-toggle-btn:hover {
+        color: #2c3e50;
+    }
+
+.layer-title {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.layer-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ccc;
+    transition: background-color .2s;
+}
+
+    .layer-indicator.visible {
+        background-color: #3b82f6;
+    }
+
+/* ---------- Tablet (≤ 992px) ---------- */
+@media (max-width: 992px) {
+    .left-street-anchor {
+        width: 60vw;
+        top: 10px;
+        left: 10px;
+    }
+
+    .esri-search {
+        width: 60vw !important;
+    }
+
+    .gis-layer-panel {
+        right: 12px;
+        width: 70vw;
+    }
+
+    .gis-right-toptray {
+        right: 12px;
+    }
+
+    .gis-right-tools {
+        right: 12px;
+    }
+}
+
+/* ---------- Mobile (≤ 576px) ---------- */
+@media (max-width: 576px) {
+    .gis-map {
+        height: calc(100vh - var(--nav-h-mobile));
+    }
+
+    .left-street-anchor {
+        width: calc(100vw - 20px);
+    }
+
+    .esri-search {
+        width: calc(60vw - 20px) !important;
+    }
+
+    .gis-right-toptray {
+        right: 10px;
+        top: 10px;
+        gap: 6px;
+        padding: 4px;
+    }
+
+    .tray-btn, .tool-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Tools move to bottom-right for thumb reach */
+    .gis-right-tools {
+        position: absolute;
+        bottom: 12px;
+        top: auto;
+        right: 10px;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    /* Layer panel behaves like a sheet */
+    .gis-layer-panel {
+        top: 80px;
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+        width: calc(100vw - 16px);
+        max-height: calc(100vh - 110px);
+        border-radius: 10px;
+    }
+}

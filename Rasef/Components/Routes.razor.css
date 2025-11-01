@@ -1,0 +1,213 @@
+/* NotFound (404) isolated styles */
+
+/* Container with gradient background */
+.error-page-container {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+    .error-page-container::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: error-moveBg 20s linear infinite;
+    }
+
+@keyframes error-moveBg {
+    from {
+        transform: translate(0,0)
+    }
+
+    to {
+        transform: translate(50px,50px)
+    }
+}
+
+/* Card */
+.error-content {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-radius: 1.5rem;
+    padding: 3rem 2rem;
+    max-width: 640px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: error-slideIn .6s ease-out;
+}
+
+@keyframes error-slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px)
+    }
+
+    to {
+        opacity: 1;
+        transform: none
+    }
+}
+
+/* Icon + title */
+.error-icon-wrapper {
+    margin-bottom: 2rem;
+    animation: error-bounce 2s ease-in-out infinite;
+}
+
+@keyframes error-bounce {
+    0%,100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-20px)
+    }
+}
+
+.error-icon {
+    font-size: 5rem;
+    color: #f39c12;
+    filter: drop-shadow(0 4px 8px rgba(243,156,18,.3));
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.error-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--bs-body-color);
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    font-size: 1.125rem;
+    color: var(--bs-secondary-color, #6c757d);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+/* Buttons row */
+.error-actions .btn {
+    padding: .75rem 2rem;
+    font-weight: 600;
+    border-radius: .75rem;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+    .error-actions .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,.2);
+    }
+
+/* Suggestions */
+.error-suggestions {
+    padding-top: 2rem;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.suggestion-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.suggestion-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    padding: 1.25rem 1.5rem;
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+    border: 1px solid var(--bs-border-color);
+    border-radius: .75rem;
+    color: var(--bs-body-color);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background-color .25s ease;
+    min-width: 140px;
+}
+
+    .suggestion-link:hover {
+        background-color: var(--bs-body-bg);
+        border-color: var(--bs-primary);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    }
+
+    .suggestion-link i {
+        font-size: 2rem;
+        color: var(--bs-primary);
+    }
+
+    .suggestion-link span {
+        font-weight: 600;
+        font-size: .9rem;
+    }
+
+/* Dark tweaks */
+[data-bs-theme="dark"] .error-content {
+    box-shadow: 0 20px 60px rgba(0,0,0,.6) !important;
+}
+
+[data-bs-theme="dark"] .suggestion-link:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,.4);
+}
+
+/* Responsive */
+@media (max-width:768px) {
+    .error-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .error-code {
+        font-size: 4rem;
+    }
+
+    .error-title {
+        font-size: 1.5rem;
+    }
+
+    .error-message {
+        font-size: 1rem;
+    }
+
+    .error-icon {
+        font-size: 4rem;
+    }
+
+    .error-actions {
+        flex-direction: column;
+    }
+
+        .error-actions .btn {
+            width: 100%;
+        }
+
+    .suggestion-links {
+        flex-direction: column;
+    }
+
+    .suggestion-link {
+        width: 100%;
+    }
+}

@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<!-- Top bar & common -->
+	<data name="home" xml:space="preserve"><value>الرئيسية</value></data>
+	<data name="menu" xml:space="preserve"><value>القائمة</value></data>
+	<data name="profile" xml:space="preserve"><value>الملف الشخصي</value></data>
+	<data name="about" xml:space="preserve"><value>حول</value></data>
+	<data name="settings" xml:space="preserve"><value>الإعدادات</value></data>
+	<data name="logout" xml:space="preserve"><value>تسجيل الخروج</value></data>
+	<data name="pavement" xml:space="preserve"><value>الرصف</value></data>
+	<data name="workOrder" xml:space="preserve"><value>أوامر العمل</value></data>
+	<data name="dashboards" xml:space="preserve"><value>لوحات المعلومات</value></data>
+	<data name="businessIntelligence" xml:space="preserve"><value>ذكاء الأعمال</value></data>
+	<data name="geoProvider" xml:space="preserve"><value>مزود الخرائط</value></data>
+	<data name="systemSettings" xml:space="preserve"><value>إعدادات النظام</value></data>
+	<data name="EAM" xml:space="preserve"><value>نظام إدارة الأصول المؤسسية</value></data>
+	<data name="distortion" xml:space="preserve"><value>الإنحراف</value></data>
+	<data name="gis" xml:space="preserve"><value>نظام المعلومات الجغرافية</value></data>
+	<data name="parameters" xml:space="preserve"><value>حدود</value></data>
+	<data name="configuration" xml:space="preserve"><value>إعدادات</value></data>
+
+	<!-- Home page -->
+	<data name="systemTitle" xml:space="preserve"><value>نــظــام راصــف</value></data>
+	<data name="systemSubtitle" xml:space="preserve"><value>إدارة وصيانة شبكات الطرق</value></data>
+	<data name="agency" xml:space="preserve"><value>وزارة النقل والخدمات اللوجستية</value></data>
+	<data name="dashboard" xml:space="preserve"><value>لوحة القيادة</value></data>
+	<data name="dashboardDesc" xml:space="preserve"><value>عرض المؤشرات العامة</value></data>
+	<data name="projectManagement" xml:space="preserve"><value>إدارة المشاريع</value></data>
+	<data name="projectDesc" xml:space="preserve"><value>تخطيط ومتابعة التنفيذ</value></data>
+	<data name="reports" xml:space="preserve"><value>التقارير</value></data>
+	<data name="reportsDesc" xml:space="preserve"><value>تقارير تفصيلية وتحليلات دقيقة</value></data>
+	<data name="userManagement" xml:space="preserve"><value>إدارة المستخدمين</value></data>
+	<data name="userDesc" xml:space="preserve"><value>التحكم في الصلاحيات والمستخدمين</value></data>
+	<data name="workorderDesc" xml:space="preserve"><value>إدارة ومتابعة أوامر العمل</value></data>
+
+	<!-- StageProgress labels -->
+	<data name="consultant" xml:space="preserve"><value>الاستشاري</value></data>
+	<data name="projectManager" xml:space="preserve"><value>مدير المشروع</value></data>
+	<data name="departmentManager" xml:space="preserve"><value>مدير الإدارة</value></data>
+	<data name="municipalityHead" xml:space="preserve"><value>رئيس البلدية</value></data>
+	<data name="excavations" xml:space="preserve"><value>الحفريات</value></data>
+	<data name="generalManager" xml:space="preserve"><value>مدير عام الإدارة</value></data>
+	<data name="contractor" xml:space="preserve"><value>المقاول</value></data>
+
+	<!-- Workflow list -->
+	<data name="workOrderTracking" xml:space="preserve"><value>تتبع أوامر العمل</value></data>
+	<data name="trackingSubtitle" xml:space="preserve"><value>إدارة ومتابعة جميع أوامر العمل</value></data>
+	<data name="createWorkOrder" xml:space="preserve"><value>إنشاء أمر عمل</value></data>
+	<data name="search" xml:space="preserve"><value>بحث</value></data>
+	<data name="searchPlaceholder" xml:space="preserve"><value>بحث برقم الامر أو الشارع</value></data>
+	<data name="filterStatus" xml:space="preserve"><value>الحالة</value></data>
+	<data name="filterMunicipality" xml:space="preserve"><value>البلدية</value></data>
+	<data name="all" xml:space="preserve"><value>الكل</value></data>
+	<data name="workOrderNumber" xml:space="preserve"><value>رقم امر العمل</value></data>
+	<data name="type" xml:space="preserve"><value>النوع</value></data>
+	<data name="status" xml:space="preserve"><value>الحالة</value></data>
+	<data name="municipality" xml:space="preserve"><value>البلدية</value></data>
+	<data name="street" xml:space="preserve"><value>الشارع</value></data>
+	<data name="createdDate" xml:space="preserve"><value>تاريخ الإنشاء</value></data>
+	<data name="currentStage" xml:space="preserve"><value>المرحلة الحالية</value></data>
+	<data name="actions" xml:space="preserve"><value>الإجراءات</value></data>
+	<data name="viewDetails" xml:space="preserve"><value>التفاصيل</value></data>
+	<data name="showing" xml:space="preserve"><value>عرض</value></data>
+	<data name="to" xml:space="preserve"><value>إلى</value></data>
+	<data name="of" xml:space="preserve"><value>من</value></data>
+	<data name="results" xml:space="preserve"><value>نتيجة</value></data>
+	<data name="noResults" xml:space="preserve"><value>لا توجد نتائج</value></data>
+	<data name="itemsPerPage" xml:space="preserve"><value>عدد العناصر في الصفحة</value></data>
+	<data name="page" xml:space="preserve"><value>صفحة</value></data>
+	<data name="previous" xml:space="preserve"><value>السابق</value></data>
+	<data name="next" xml:space="preserve"><value>التالي</value></data>
+	<data name="edit" xml:space="preserve"><value>تعديل</value></data>
+
+	<!-- Status/Type values -->
+	<data name="Normal" xml:space="preserve"><value>عادي</value></data>
+	<data name="ExceptionPriority" xml:space="preserve"><value>استثناء أولوية</value></data>
+	<data name="ExceptionEmergency" xml:space="preserve"><value>استثناء طارئ</value></data>
+	<data name="PendingReview" xml:space="preserve"><value>قيد المراجعة</value></data>
+	<data name="Approved" xml:space="preserve"><value>معتمد</value></data>
+	<data name="Rejected" xml:space="preserve"><value>مرفوض</value></data>
+	<data name="InProgress" xml:space="preserve"><value>قيد التنفيذ</value></data>
+	<data name="Completed" xml:space="preserve"><value>مكتمل</value></data>
+
+	<!-- Edit page -->
+	<data name="title_edit" xml:space="preserve"><value>تعديل أمر العمل</value></data>
+	<data name="subtitle_edit" xml:space="preserve"><value>حدّث بيانات أمر العمل واحفظ التغييرات</value></data>
+	<data name="notes" xml:space="preserve"><value>الملاحظات</value></data>
+	<data name="save" xml:space="preserve"><value>حفظ التغييرات</value></data>
+	<data name="cancel" xml:space="preserve"><value>إلغاء</value></data>
+
+	<!-- Details page -->
+	<data name="title_details" xml:space="preserve"><value>تفاصيل أمر العمل</value></data>
+	<data name="subtitle_details" xml:space="preserve"><value>عرض كامل المعلومات والإجراءات</value></data>
+	<data name="back" xml:space="preserve"><value>عودة</value></data>
+	<data name="print" xml:space="preserve"><value>طباعة</value></data>
+	<data name="streetInfo" xml:space="preserve"><value>معلومات الشارع</value></data>
+	<data name="mainDistrict" xml:space="preserve"><value>الحي الرئيسي</value></data>
+	<data name="subDistrict" xml:space="preserve"><value>الحي الفرعي</value></data>
+	<data name="streetNos" xml:space="preserve"><value>أرقام الشوارع</value></data>
+	<data name="sectionNo" xml:space="preserve"><value>رقم المقطع (فرعي)</value></data>
+	<data name="sector" xml:space="preserve"><value>القطاع (رئيسي)</value></data>
+	<data name="category" xml:space="preserve"><value>تصنيف الشارع</value></data>
+	<data name="mainStreet" xml:space="preserve"><value>شارع رئيسي</value></data>
+	<data name="subStreet" xml:space="preserve"><value>شارع فرعي</value></data>
+	<data name="perLaneTypes" xml:space="preserve"><value>أنواع المسارات</value></data>
+	<data name="workflowProgress" xml:space="preserve"><value>تقدم سير العمل</value></data>
+	<data name="projectDetails" xml:space="preserve"><value>تفاصيل المشروع</value></data>
+	<data name="project" xml:space="preserve"><value>المشروع</value></data>
+	<data name="contractNumber" xml:space="preserve"><value>رقم العقد/الارتباط</value></data>
+	<data name="duration" xml:space="preserve"><value>المدة</value></data>
+	<data name="days" xml:space="preserve"><value>يوم</value></data>
+	<data name="siteLocation" xml:space="preserve"><value>موقع الموقع</value></data>
+	<data name="orderDates" xml:space="preserve"><value>تواريخ الأمر</value></data>
+	<data name="orderDate" xml:space="preserve"><value>تاريخ الأمر</value></data>
+	<data name="endDate" xml:space="preserve"><value>تاريخ الانتهاء</value></data>
+	<data name="renewDate" xml:space="preserve"><value>تاريخ التجديد</value></data>
+	<data name="warranty" xml:space="preserve"><value>الضمان</value></data>
+	<data name="yearsOfLife" xml:space="preserve"><value>سنوات العمر</value></data>
+	<data name="warrantyStartDate" xml:space="preserve"><value>بداية الضمان</value></data>
+	<data name="warrantyEndDate" xml:space="preserve"><value>نهاية الضمان</value></data>
+	<data name="attachments" xml:space="preserve"><value>المرفقات</value></data>
+	<data name="consultantAttachments" xml:space="preserve"><value>مرفقات الاستشاري</value></data>
+	<data name="contractorAttachments" xml:space="preserve"><value>مرفقات المقاول</value></data>
+	<data name="download" xml:space="preserve"><value>تحميل</value></data>
+	<data name="uploadedBy" xml:space="preserve"><value>رفع بواسطة</value></data>
+	<data name="workflowHistory" xml:space="preserve"><value>سجل سير العمل</value></data>
+	<data name="stage" xml:space="preserve"><value>المرحلة</value></data>
+	<data name="actionBy" xml:space="preserve"><value>الإجراء بواسطة</value></data>
+	<data name="actionDate" xml:space="preserve"><value>تاريخ الإجراء</value></data>
+	<data name="comments" xml:space="preserve"><value>التعليقات</value></data>
+	<data name="equipment" xml:space="preserve"><value>المعدات</value></data>
+	<data name="equipmentList" xml:space="preserve"><value>قائمة المعدات</value></data>
+	<data name="quantity" xml:space="preserve"><value>الكمية</value></data>
+	<data name="itemFix" xml:space="preserve"><value>الإصلاحات</value></data>
+	<data name="fixList" xml:space="preserve"><value>قائمة الإصلاحات</value></data>
+	<data name="description" xml:space="preserve"><value>الوصف</value></data>
+	<data name="boqItems" xml:space="preserve"><value>عناصر BOQ</value></data>
+	<data name="itemDesc" xml:space="preserve"><value>وصف العنصر</value></data>
+	<data name="itemCode" xml:space="preserve"><value>كود العنصر</value></data>
+	<data name="unit" xml:space="preserve"><value>الوحدة</value></data>
+	<data name="qty" xml:space="preserve"><value>الكمية</value></data>
+	<data name="prevExec" xml:space="preserve"><value>التنفيذ السابق</value></data>
+	<data name="execQty" xml:space="preserve"><value>كمية التنفيذ</value></data>
+	<data name="remainder" xml:space="preserve"><value>الباقي</value></data>
+	<data name="excavationInfo" xml:space="preserve"><value>معلومات الحفريات</value></data>
+	<data name="excavationStatus" xml:space="preserve"><value>حالة الحفريات</value></data>
+	<data name="excavationNotes" xml:space="preserve"><value>ملاحظات الحفريات</value></data>
+
+	<!-- Excavation status codes -->
+	<data name="RJI" xml:space="preserve"><value>إنشاء طلب أمر صيانة</value></data>
+	<data name="RJOP" xml:space="preserve"><value>يوجد طلب لرخصة حفر</value></data>
+	<data name="RJPP" xml:space="preserve"><value>رخصة حفر موجودة</value></data>
+	<data name="RJPBI" xml:space="preserve"><value>جاهز للنشر</value></data>
+	<data name="RJPB" xml:space="preserve"><value>في مرحلة النشر</value></data>
+	<data name="RJOR" xml:space="preserve"><value>جاهز للنشر في نظام راصف</value></data>
+	<data name="RJOS" xml:space="preserve"><value>اعتراض من قبل الحفريات</value></data>
+	<data name="RJOB" xml:space="preserve"><value>تمت الموافقة</value></data>
+
+	<!-- Create page -->
+	<data name="title_create" xml:space="preserve"><value>إنشاء أمر عمل جديد</value></data>
+	<data name="subtitle_create" xml:space="preserve"><value>أدخل بيانات أمر العمل الجديد</value></data>
+	<data name="back" xml:space="preserve"><value>رجوع</value></data>
+	<data name="saveClose" xml:space="preserve"><value>حفظ وإغلاق</value></data>
+	<data name="saveKeep" xml:space="preserve"><value>حفظ ومتابعة</value></data>
+	<data name="delete" xml:space="preserve"><value>حذف</value></data>
+	<data name="general" xml:space="preserve"><value>عام</value></data>
+	<data name="attachmentsTitle" xml:space="preserve"><value>المرفقات</value></data>
+	<data name="workflowHistoryTitle" xml:space="preserve"><value>سجل سير العمل</value></data>
+	<data name="streetCategory" xml:space="preserve"><value>تصنيف الشارع</value></data>
+	<data name="selectMunicipality" xml:space="preserve"><value>-- اختر البلدية --</value></data>
+	<data name="selectDistrict" xml:space="preserve"><value>-- اختر الحي --</value></data>
+	<data name="addLane" xml:space="preserve"><value>إضافة مسار</value></data>
+	<data name="laneNo" xml:space="preserve"><value>رقم المسار</value></data>
+	<data name="laneType" xml:space="preserve"><value>نوع المسار</value></data>
+	<data name="removeLane" xml:space="preserve"><value>إزالة</value></data>
+	<data name="workOrderType" xml:space="preserve"><value>نوع أمر العمل</value></data>
+	<data name="selectType" xml:space="preserve"><value>-- اختر --</value></data>
+	<data name="orderDates" xml:space="preserve"><value>تواريخ الأمر</value></data>
+	<data name="workOrderDate" xml:space="preserve"><value>تاريخ أمر العمل</value></data>
+	<data name="workOrderEndDate" xml:space="preserve"><value>تاريخ انتهاء أمر العمل</value></data>
+	<data name="workOrderRenewDate" xml:space="preserve"><value>تاريخ تجديد أمر العمل</value></data>
+	<data name="projectInfo" xml:space="preserve"><value>معلومات المشروع</value></data>
+	<data name="assignTo" xml:space="preserve"><value>تعيين إلى</value></data>
+	<data name="projectRef" xml:space="preserve"><value>مرجع المشروع</value></data>
+	<data name="workDuration" xml:space="preserve"><value>مدة العمل</value></data>
+	<data name="durationHelp" xml:space="preserve"><value>يجب تقدير مدة العمل بالأيام</value></data>
+	<data name="warranty" xml:space="preserve"><value>الضمان</value></data>
+	<data name="additionalInfo" xml:space="preserve"><value>معلومات إضافية</value></data>
+	<data name="equipmentName" xml:space="preserve"><value>اسم المعدات</value></data>
+	<data name="addEquipment" xml:space="preserve"><value>إضافة معدات</value></data>
+	<data name="addFix" xml:space="preserve"><value>إضافة إصلاح</value></data>
+	<data name="fixName" xml:space="preserve"><value>اسم الإصلاح</value></data>
+	<data name="fixDescription" xml:space="preserve"><value>وصف الإصلاح</value></data>
+	<data name="addBoqItem" xml:space="preserve"><value>إضافة عنصر BOQ</value></data>
+	<data name="noItems" xml:space="preserve"><value>لا توجد عناصر</value></data>
+	<data name="workOrderNotes" xml:space="preserve"><value>ملاحظات أمر العمل</value></data>
+	<data name="notesPlaceholder" xml:space="preserve"><value>ضع ملاحظات تفصيلية عن العمل...</value></data>
+	<data name="projectPlan" xml:space="preserve"><value>خطة المشروع</value></data>
+	<data name="selectFile" xml:space="preserve"><value>اختر ملف</value></data>
+	<data name="imageBefore" xml:space="preserve"><value>صورة قبل</value></data>
+	<data name="imageAfter" xml:space="preserve"><value>صورة بعد</value></data>
+	<data name="mapKey" xml:space="preserve"><value>مفتاح الخريطة</value></data>
+	<data name="otherDoc" xml:space="preserve"><value>مستند آخر</value></data>
+	<data name="followWorkflow" xml:space="preserve"><value>متابعة سير العمل</value></data>
+	<data name="noHistory" xml:space="preserve"><value>لا يوجد سجل</value></data>
+	<data name="required" xml:space="preserve"><value>هذا الحقل مطلوب</value></data>
+
+	<!-- Not Found -->
+	<data name="notFoundTitle" xml:space="preserve"><value>الصفحة غير موجودة</value></data>
+	<data name="notFoundMessage" xml:space="preserve"><value>عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها إلى موقع آخر</value></data>
+	<data name="backHome" xml:space="preserve"><value>العودة للرئيسية</value></data>
+	<data name="goBack" xml:space="preserve"><value>رجوع</value></data>
+	<data name="suggestions" xml:space="preserve"><value>أو يمكنك زيارة إحدى هذه الصفحات:</value></data>
+	<data name="workOrders" xml:space="preserve"><value>أوامر العمل</value></data>
+
+	<data name="stageConsultant" xml:space="preserve"><value>الاستشاري</value></data>
+	<data name="stageProjectManager" xml:space="preserve"><value>مدير المشروع</value></data>
+	<data name="stageDepartmentManager" xml:space="preserve"><value>مدير الإدارة</value></data>
+	<data name="stageMayor" xml:space="preserve"><value>رئيس البلدية</value></data>
+	<data name="stageExcavations" xml:space="preserve"><value>الحفريات</value></data>
+	<data name="stageGeneralManager" xml:space="preserve"><value>مدير عام الإدارة</value></data>
+	<data name="stageContractor" xml:space="preserve"><value>المقاول</value></data>
+</root>

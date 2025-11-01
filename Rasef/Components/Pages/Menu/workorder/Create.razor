@@ -1,235 +1,68 @@
 ﻿@page "/workorder/create"
 @layout MainLayout
 @using System.ComponentModel.DataAnnotations
+@using Rasef.Resources.Localization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
 @inject NavigationManager Nav
+@inject IStringLocalizer<Strings> L
+@inject CultureService Culture
+@implements IDisposable
 
 @code {
-    [CascadingParameter] public string CurrentLanguage { get; set; } = "AR";
-    private string activeTab = "general";
-
-    private readonly Dictionary<string, Dictionary<string, string>> t = new()
+    protected override void OnInitialized()
     {
-        ["AR"] = new()
-        {
-            ["title"] = "إنشاء أمر عمل جديد",
-            ["subtitle"] = "أدخل بيانات أمر العمل الجديد",
-            ["back"] = "رجوع",
-            ["saveClose"] = "حفظ وإغلاق",
-            ["saveKeep"] = "حفظ ومتابعة",
-            ["delete"] = "حذف",
-            ["general"] = "عام",
-            ["attachments"] = "المرفقات",
-            ["workflowHistory"] = "سجل سير العمل",
-            ["streetInfo"] = "معلومات الشارع",
-            ["streetCategory"] = "تصنيف الشارع",
-            ["mainStreet"] = "شارع رئيسي",
-            ["subStreet"] = "شارع فرعي",
-            ["municipality"] = "البلدية",
-            ["selectMunicipality"] = "-- اختر البلدية --",
-            ["mainDistrict"] = "الحي الرئيسي",
-            ["selectDistrict"] = "-- اختر الحي --",
-            ["subDistrict"] = "الحي الفرعي",
-            ["street"] = "الشارع",
-            ["streetNos"] = "أرقام الشوارع",
-            ["sector"] = "القطاع (رئيسي)",
-            ["sectionNo"] = "رقم المقطع (فرعي)",
-            ["addLane"] = "إضافة مسار",
-            ["laneNo"] = "رقم المسار",
-            ["laneType"] = "نوع المسار",
-            ["removeLane"] = "إزالة",
-            ["workOrderType"] = "نوع أمر العمل",
-            ["selectType"] = "-- اختر --",
-            ["orderDates"] = "تواريخ الأمر",
-            ["workOrderDate"] = "تاريخ أمر العمل",
-            ["workOrderEndDate"] = "تاريخ انتهاء أمر العمل",
-            ["workOrderRenewDate"] = "تاريخ تجديد أمر العمل",
-            ["projectInfo"] = "معلومات المشروع",
-            ["assignTo"] = "تعيين إلى",
-            ["projectRef"] = "مرجع المشروع",
-            ["contractNumber"] = "رقم العقد/الارتباط",
-            ["siteLocation"] = "موقع الموقع",
-            ["workDuration"] = "مدة العمل",
-            ["durationHelp"] = "يجب تقدير مدة العمل بالأيام",
-            ["warranty"] = "الضمان",
-            ["yearsOfLife"] = "سنوات العمر",
-            ["warrantyStartDate"] = "تاريخ بدء الضمان",
-            ["warrantyEndDate"] = "تاريخ انتهاء الضمان",
-            ["additionalInfo"] = "معلومات إضافية",
-            ["equipment"] = "المعدات",
-            ["addEquipment"] = "إضافة معدات",
-            ["equipmentName"] = "اسم المعدات",
-            ["quantity"] = "الكمية",
-            ["itemFix"] = "الإصلاحات",
-            ["addFix"] = "إضافة إصلاح",
-            ["fixName"] = "اسم الإصلاح",
-            ["fixDescription"] = "وصف الإصلاح",
-            ["boqItems"] = "عناصر BOQ",
-            ["addBoqItem"] = "إضافة عنصر BOQ",
-            ["itemDesc"] = "وصف العنصر",
-            ["itemCode"] = "كود العنصر",
-            ["unit"] = "الوحدة",
-            ["qty"] = "الكمية",
-            ["prevExec"] = "التنفيذ السابق",
-            ["execQty"] = "كمية التنفيذ",
-            ["actions"] = "الإجراءات",
-            ["noItems"] = "لا توجد عناصر",
-            ["workOrderNotes"] = "ملاحظات أمر العمل",
-            ["notesPlaceholder"] = "ضع ملاحظات تفصيلية عن العمل...",
-            ["attachmentsTitle"] = "المرفقات",
-            ["projectPlan"] = "خطة المشروع",
-            ["selectFile"] = "اختر ملف",
-            ["imageBefore"] = "صورة قبل",
-            ["imageAfter"] = "صورة بعد",
-            ["mapKey"] = "مفتاح الخريطة",
-            ["otherDoc"] = "مستند آخر",
-            ["followWorkflow"] = "متابعة سير العمل",
-            ["workflowHistoryTitle"] = "سجل سير العمل",
-            ["stage"] = "المرحلة",
-            ["actionBy"] = "الإجراء بواسطة",
-            ["actionDate"] = "تاريخ الإجراء",
-            ["status"] = "الحالة",
-            ["comments"] = "التعليقات",
-            ["noHistory"] = "لا يوجد سجل",
-            ["Normal"] = "عادي",
-            ["ExceptionPriority"] = "استثناء أولوية",
-            ["ExceptionEmergency"] = "استثناء طارئ",
-            ["required"] = "هذا الحقل مطلوب"
-        },
-        ["EN"] = new()
-        {
-            ["title"] = "New Work Order",
-            ["subtitle"] = "Enter new work order information",
-            ["back"] = "Back",
-            ["saveClose"] = "Save & Close",
-            ["saveKeep"] = "Save & Keep",
-            ["delete"] = "Delete",
-            ["general"] = "General",
-            ["attachments"] = "Attachments",
-            ["workflowHistory"] = "Workflow History",
-            ["streetInfo"] = "Street Information",
-            ["streetCategory"] = "Street Category",
-            ["mainStreet"] = "Main Street",
-            ["subStreet"] = "Sub Street",
-            ["municipality"] = "Municipality",
-            ["selectMunicipality"] = "-- Select Municipality --",
-            ["mainDistrict"] = "Main District",
-            ["selectDistrict"] = "-- Select District --",
-            ["subDistrict"] = "Sub-District",
-            ["street"] = "Street",
-            ["streetNos"] = "Street Numbers",
-            ["sector"] = "Sector (Main)",
-            ["sectionNo"] = "Section No (Sub)",
-            ["addLane"] = "Add Lane",
-            ["laneNo"] = "Lane No",
-            ["laneType"] = "Lane Type",
-            ["removeLane"] = "Remove",
-            ["workOrderType"] = "Work Order Type",
-            ["selectType"] = "-- Select --",
-            ["orderDates"] = "Order Dates",
-            ["workOrderDate"] = "Work Order Date",
-            ["workOrderEndDate"] = "Work Order End Date",
-            ["workOrderRenewDate"] = "Work Order Renew Date",
-            ["projectInfo"] = "Project Information",
-            ["assignTo"] = "Assign To",
-            ["projectRef"] = "Project Ref",
-            ["contractNumber"] = "Contract Number",
-            ["siteLocation"] = "Site Location",
-            ["workDuration"] = "Work Duration",
-            ["durationHelp"] = "Work Duration Should be Estimated in Days",
-            ["warranty"] = "Warranty",
-            ["yearsOfLife"] = "Years Of Life",
-            ["warrantyStartDate"] = "Warranty Start Date",
-            ["warrantyEndDate"] = "Warranty End Date",
-            ["additionalInfo"] = "Additional Information",
-            ["equipment"] = "Equipment",
-            ["addEquipment"] = "Add Equipment",
-            ["equipmentName"] = "Equipment Name",
-            ["quantity"] = "Quantity",
-            ["itemFix"] = "Fixes",
-            ["addFix"] = "Add Fix",
-            ["fixName"] = "Fix Name",
-            ["fixDescription"] = "Fix Description",
-            ["boqItems"] = "BOQ Items",
-            ["addBoqItem"] = "Add BOQ Item",
-            ["itemDesc"] = "Item Desc",
-            ["itemCode"] = "Item Code",
-            ["unit"] = "Unit",
-            ["qty"] = "Qty",
-            ["prevExec"] = "Prev Exec",
-            ["execQty"] = "Exec Qty",
-            ["actions"] = "Actions",
-            ["noItems"] = "No items",
-            ["workOrderNotes"] = "Work Order Notes",
-            ["notesPlaceholder"] = "Put detailed notes about the work...",
-            ["attachmentsTitle"] = "Attachments",
-            ["projectPlan"] = "Project Plan",
-            ["selectFile"] = "Select File",
-            ["imageBefore"] = "Image Before",
-            ["imageAfter"] = "Image After",
-            ["mapKey"] = "Map Key",
-            ["otherDoc"] = "Other Document",
-            ["followWorkflow"] = "Follow up Workflow History",
-            ["workflowHistoryTitle"] = "Workflow History",
-            ["stage"] = "Stage",
-            ["actionBy"] = "Action By",
-            ["actionDate"] = "Action Date",
-            ["status"] = "Status",
-            ["comments"] = "Comments",
-            ["noHistory"] = "No history",
-            ["Normal"] = "Normal",
-            ["ExceptionPriority"] = "Exception Priority",
-            ["ExceptionEmergency"] = "Exception Emergency",
-            ["required"] = "This field is required"
-        }
-    };
-    string T(string k) => t[CurrentLanguage].TryGetValue(k, out var v) ? v : k;
+        Culture.OnChange += HandleCultureChanged;
+        base.OnInitialized();
+    }
 
+    private void HandleCultureChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Culture.OnChange -= HandleCultureChanged;
+
+    private string activeTab = "general";
     private WorkOrderForm model = new();
 
-    private void Submit()
+    // attachments (IBrowserFile references)
+    private IBrowserFile? ProjectPlanFile;
+    private IBrowserFile? ImageBeforeFile;
+    private IBrowserFile? ImageAfterFile;
+    private IBrowserFile? MapKeyFile;
+    private IBrowserFile? OtherDocFile;
+
+    // file handlers
+    void OnProjectPlanSelected(InputFileChangeEventArgs e) => ProjectPlanFile = e.FileCount > 0 ? e.File : null;
+    void OnImageBeforeSelected(InputFileChangeEventArgs e) => ImageBeforeFile = e.FileCount > 0 ? e.File : null;
+    void OnImageAfterSelected(InputFileChangeEventArgs e) => ImageAfterFile = e.FileCount > 0 ? e.File : null;
+    void OnMapKeySelected(InputFileChangeEventArgs e) => MapKeyFile = e.FileCount > 0 ? e.File : null;
+    void OnOtherDocSelected(InputFileChangeEventArgs e) => OtherDocFile = e.FileCount > 0 ? e.File : null;
+
+    static string HumanSize(long bytes)
     {
-        Nav.NavigateTo("/workorder/workflow");
+        decimal s = bytes;
+        string[] u = { "B", "KB", "MB", "GB", "TB" };
+        int i = 0;
+        while (s >= 1024 && i < u.Length - 1) { s /= 1024; i++; }
+        return $"{s:0.#} {u[i]}";
     }
 
-    private void AddLane()
-    {
-        model.Lanes.Add(new LaneForm { LaneNo = (model.Lanes.Count + 1).ToString(), Type = "Normal" });
-    }
+    private void Submit() => Nav.NavigateTo("/workorder/workflow");
 
-    private void RemoveLane(LaneForm lane)
-    {
-        model.Lanes.Remove(lane);
-    }
+    // tab handlers (method groups -> no CS1662)
+    void SetTabGeneral(MouseEventArgs _) => activeTab = "general";
+    void SetTabAttachments(MouseEventArgs _) => activeTab = "attachments";
+    void SetTabWorkflow(MouseEventArgs _) => activeTab = "workflow";
 
-    private void AddEquipment()
-    {
-        model.Equipment.Add(new EquipmentForm());
-    }
+    private void AddLane() => model.Lanes.Add(new LaneForm { LaneNo = (model.Lanes.Count + 1).ToString(), Type = "Normal" });
+    private void RemoveLane(LaneForm lane) => model.Lanes.Remove(lane);
 
-    private void RemoveEquipment(EquipmentForm eq)
-    {
-        model.Equipment.Remove(eq);
-    }
+    private void AddEquipment() => model.Equipment.Add(new EquipmentForm());
+    private void RemoveEquipment(EquipmentForm eq) => model.Equipment.Remove(eq);
 
-    private void AddFix()
-    {
-        model.Fixes.Add(new FixForm());
-    }
+    private void AddFix() => model.Fixes.Add(new FixForm());
+    private void RemoveFix(FixForm fix) => model.Fixes.Remove(fix);
 
-    private void RemoveFix(FixForm fix)
-    {
-        model.Fixes.Remove(fix);
-    }
-
-    private void AddBoqItem()
-    {
-        model.BoqItems.Add(new BoqItemForm());
-    }
-
-    private void RemoveBoqItem(BoqItemForm item)
-    {
-        model.BoqItems.Remove(item);
-    }
+    private void AddBoqItem() => model.BoqItems.Add(new BoqItemForm());
+    private void RemoveBoqItem(BoqItemForm item) => model.BoqItems.Remove(item);
 
     public class WorkOrderForm
     {
@@ -245,6 +78,7 @@
 
         [Required(ErrorMessage = "Required")]
         public string Type { get; set; } = "";
+
         public DateTime? WorkOrderDate { get; set; }
         public DateTime? WorkOrderEndDate { get; set; }
         public DateTime? WorkOrderRenewDate { get; set; }
@@ -256,92 +90,65 @@
         public int? YearsOfLife { get; set; }
         public DateTime? WarrantyEndDate { get; set; }
         public DateTime? WarrantyStartDate { get; set; }
+
         public List<EquipmentForm> Equipment { get; set; } = new();
         public List<FixForm> Fixes { get; set; } = new();
         public List<BoqItemForm> BoqItems { get; set; } = new();
         public string WorkOrderNotes { get; set; } = "";
     }
 
-    public class LaneForm
-    {
-        public string LaneNo { get; set; } = "";
-        public string Type { get; set; } = "Normal";
-    }
-
-    public class EquipmentForm
-    {
-        public string Name { get; set; } = "";
-        public int Quantity { get; set; } = 1;
-    }
-
-    public class FixForm
-    {
-        public string Name { get; set; } = "";
-        public string Description { get; set; } = "";
-    }
-
-    public class BoqItemForm
-    {
-        public string Desc { get; set; } = "";
-        public string Code { get; set; } = "";
-        public string Unit { get; set; } = "";
-        public decimal Qty { get; set; }
-        public decimal PrevExec { get; set; }
-        public decimal ExecQty { get; set; }
-    }
+    public class LaneForm { public string LaneNo { get; set; } = ""; public string Type { get; set; } = "Normal"; }
+    public class EquipmentForm { public string Name { get; set; } = ""; public int Quantity { get; set; } = 1; }
+    public class FixForm { public string Name { get; set; } = ""; public string Description { get; set; } = ""; }
+    public class BoqItemForm { public string Desc { get; set; } = ""; public string Code { get; set; } = ""; public string Unit { get; set; } = ""; public decimal Qty { get; set; } public decimal PrevExec { get; set; } public decimal ExecQty { get; set; } }
 }
 
-<!-- NOTE: force dark for this page; if you have a global toggle, remove these attributes and set them on <body> -->
-<div dir="@(CurrentLanguage == "AR" ? "rtl" : "ltr")">
+<div dir="@(Culture.IsArabic ? "rtl" : "ltr")">
 
-
+    <!-- Header -->
     <div class="mb-3">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div class="d-flex align-items-center gap-2">
-                <a href="/workorder/workflow" class="btn btn-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                    <i class="bi bi-arrow-@(CurrentLanguage == "AR" ? "right" : "left")"></i>
+                <a href="/workorder/workflow"
+                   class="btn btn-light d-flex align-items-center justify-content-center header-back-btn"
+                   style="width: 40px; height: 40px;">
+                    <i class="bi bi-arrow-@(Culture.IsArabic ? "right" : "left")"></i>
                 </a>
                 <div>
-                    <h5 class="m-0 fw-bold text-primary">@T("title")</h5>
-                    <p class="text-muted small mb-0">@T("subtitle")</p>
+                    <h5 class="m-0 fw-bold text-primary">@L["title_create"]</h5>
+                    <p class="text-muted small mb-0">@L["subtitle_create"]</p>
                 </div>
-            </div>
-            <div class="d-flex gap-2 flex-wrap">
-                <button class="btn btn-primary btn-sm" @onclick="Submit">
-                    <i class="bi bi-floppy me-1"></i> @T("saveClose")
-                </button>
-                <button class="btn btn-success btn-sm" @onclick="Submit">
-                    <i class="bi bi-check-circle me-1"></i> @T("saveKeep")
-                </button>
-                <button class="btn btn-danger btn-sm">
-                    <i class="bi bi-trash me-1"></i> @T("delete")
-                </button>
             </div>
         </div>
     </div>
 
+    <!-- Tabs -->
     <div class="card mb-3 border-0 shadow-sm">
         <div class="card-header bg-body-secondary border-bottom">
             <ul class="nav nav-tabs card-header-tabs border-0">
                 <li class="nav-item">
-                    <button class="nav-link @(activeTab == "general" ? "active" : "") border-0 d-flex align-items-center gap-2" @onclick='() => activeTab = "general"'>
-                        <i class="bi bi-info-circle"></i> @T("general")
+                    <button class="nav-link @(activeTab == "general" ? "active" : "") border-0 d-flex align-items-center gap-2"
+                            @onclick="SetTabGeneral">
+                        <i class="bi bi-info-circle"></i> @L["general"]
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link @(activeTab == "attachments" ? "active" : "") border-0 d-flex align-items-center gap-2" @onclick='() => activeTab = "attachments"'>
-                        <i class="bi bi-paperclip"></i> @T("attachments")
+                    <button class="nav-link @(activeTab == "attachments" ? "active" : "") border-0 d-flex align-items-center gap-2"
+                            @onclick="SetTabAttachments">
+                        <i class="bi bi-paperclip"></i> @L["attachmentsTitle"]
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link @(activeTab == "workflow" ? "active" : "") border-0 d-flex align-items-center gap-2" @onclick='() => activeTab = "workflow"'>
-                        <i class="bi bi-clock-history"></i> @T("workflowHistory")
+                    <button class="nav-link @(activeTab == "workflow" ? "active" : "") border-0 d-flex align-items-center gap-2"
+                            @onclick="SetTabWorkflow">
+                        <i class="bi bi-clock-history"></i> @L["workflowHistoryTitle"]
                     </button>
                 </li>
             </ul>
         </div>
     </div>
 
+    <!-- Form -->
     <EditForm Model="model" OnValidSubmit="Submit">
         <DataAnnotationsValidator />
 
@@ -352,76 +159,85 @@
                 <div class="card mb-4 border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-signpost-2 fs-5"></i>
-                        <span class="fw-bold">@T("streetInfo")</span>
+                        <span class="fw-bold">@L["streetInfo"]</span>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
+
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold small text-uppercase">@T("streetCategory") *</label>
-                                <div class="btn-group w-100" role="group">
-                                    <input type="radio" class="btn-check" name="streetCategory" id="catMain" value="Main" @onchange='() => model.StreetCategory = "Main"' checked="@(model.StreetCategory == "Main")" />
-                                    <label class="btn btn-outline-primary" for="catMain">@T("mainStreet")</label>
-                                    <input type="radio" class="btn-check" name="streetCategory" id="catSub" value="Sub" @onchange='() => model.StreetCategory = "Sub"' checked="@(model.StreetCategory == "Sub")" />
-                                    <label class="btn btn-outline-primary" for="catSub">@T("subStreet")</label>
-                                </div>
+                                <label class="form-label fw-semibold small text-uppercase d-block">@L["streetCategory"] *</label>
+                                <InputRadioGroup @bind-Value="model.StreetCategory" TValue="string" class="d-flex gap-3">
+                                    <div class="form-check form-check-inline">
+                                        <InputRadio TValue="string" Value="@("Main")" class="form-check-input" id="catMain" />
+                                        <label class="form-check-label" for="catMain">@L["mainStreet"]</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <InputRadio TValue="string" Value="@("Sub")" class="form-check-input" id="catSub" />
+                                        <label class="form-check-label" for="catSub">@L["subStreet"]</label>
+                                    </div>
+                                </InputRadioGroup>
                             </div>
+
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("municipality") *</label>
-                                <select class="form-select" @bind="model.Municipality">
-                                    <option value="">@T("selectMunicipality")</option>
+                                <label class="form-label fw-semibold small text-uppercase">@L["municipality"] *</label>
+                                <InputSelect class="form-select" @bind-Value="model.Municipality">
+                                    <option value="">@L["selectMunicipality"]</option>
                                     <option value="jeddah">جدة / Jeddah</option>
                                     <option value="mecca">مكة / Mecca</option>
                                     <option value="riyadh">الرياض / Riyadh</option>
-                                </select>
+                                </InputSelect>
                             </div>
+
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("mainDistrict") *</label>
-                                <select class="form-select" @bind="model.MainDistrict">
-                                    <option value="">@T("selectDistrict")</option>
+                                <label class="form-label fw-semibold small text-uppercase">@L["mainDistrict"] *</label>
+                                <InputSelect class="form-select" @bind-Value="model.MainDistrict">
+                                    <option value="">@L["selectDistrict"]</option>
                                     <option value="alsalamah">Al-Salamah</option>
                                     <option value="alrawdah">Al-Rawdah</option>
-                                </select>
+                                </InputSelect>
                             </div>
+
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("subDistrict")</label>
-                                <input type="text" class="form-control" @bind="model.SubDistrict" placeholder="Block A" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["subDistrict"]</label>
+                                <InputText class="form-control" @bind-Value="model.SubDistrict" placeholder="Block A" />
                             </div>
 
                             @if (model.StreetCategory == "Sub")
                             {
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold small text-uppercase">@T("streetNos")</label>
-                                    <input type="text" class="form-control" @bind="model.SelectedStreetNos" placeholder="101, 102, 103" />
+                                    <label class="form-label fw-semibold small text-uppercase">@L["streetNos"]</label>
+                                    <InputText class="form-control" @bind-Value="model.SelectedStreetNos" placeholder="101, 102, 103" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold small text-uppercase">@T("sectionNo")</label>
-                                    <input type="text" class="form-control" @bind="model.SectionNo" />
+                                    <label class="form-label fw-semibold small text-uppercase">@L["sectionNo"]</label>
+                                    <InputText class="form-control" @bind-Value="model.SectionNo" />
                                 </div>
                             }
                             else
                             {
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold small text-uppercase">@T("street")</label>
-                                    <input type="text" class="form-control" @bind="model.SingleStreetNo" placeholder="1001" />
+                                    <label class="form-label fw-semibold small text-uppercase">@L["street"]</label>
+                                    <InputText class="form-control" @bind-Value="model.SingleStreetNo" placeholder="1001" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold small text-uppercase">@T("sector")</label>
-                                    <input type="text" class="form-control" @bind="model.Sector" placeholder="Sector-1" />
+                                    <label class="form-label fw-semibold small text-uppercase">@L["sector"]</label>
+                                    <InputText class="form-control" @bind-Value="model.Sector" placeholder="Sector-1" />
                                 </div>
 
                                 <div class="col-12">
                                     <div class="p-3 bg-body-secondary border rounded-3">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <label class="form-label fw-semibold mb-0">@T("laneType")</label>
+                                            <label class="form-label fw-semibold mb-0">@L["laneType"]</label>
                                             <button type="button" class="btn btn-primary btn-sm" @onclick="AddLane">
-                                                <i class="bi bi-plus-circle me-1"></i> @T("addLane")
+                                                <i class="bi bi-plus-circle me-1"></i> @L["addLane"]
                                             </button>
                                         </div>
+
                                         @if (model.Lanes.Count == 0)
                                         {
                                             <div class="text-center text-muted py-5">
                                                 <i class="bi bi-inbox display-1 opacity-25"></i>
-                                                <p class="mt-2">@T("noItems")</p>
+                                                <p class="mt-2">@L["noItems"]</p>
                                             </div>
                                         }
                                         else
@@ -429,19 +245,18 @@
                                             <div class="d-flex flex-column gap-2">
                                                 @foreach (var lane in model.Lanes)
                                                 {
-                                                    <!-- CHANGED: bg-white -> bg-surface so it adapts in dark -->
                                                     <div class="d-flex gap-2 p-3 bg-body border rounded-2 align-items-end">
                                                         <div style="min-width: 120px;">
-                                                            <label class="form-label small fw-semibold text-muted">@T("laneNo")</label>
-                                                            <input type="text" class="form-control form-control-sm" @bind="lane.LaneNo" />
+                                                            <label class="form-label small fw-semibold text-muted">@L["laneNo"]</label>
+                                                            <InputText class="form-control form-control-sm" @bind-Value="lane.LaneNo" />
                                                         </div>
                                                         <div class="flex-grow-1">
-                                                            <label class="form-label small fw-semibold text-muted">@T("laneType")</label>
-                                                            <select class="form-select form-select-sm" @bind="lane.Type">
-                                                                <option value="Normal">@T("Normal")</option>
-                                                                <option value="ExceptionPriority">@T("ExceptionPriority")</option>
-                                                                <option value="ExceptionEmergency">@T("ExceptionEmergency")</option>
-                                                            </select>
+                                                            <label class="form-label small fw-semibold text-muted">@L["laneType"]</label>
+                                                            <InputSelect class="form-select form-select-sm" @bind-Value="lane.Type">
+                                                                <option value="Normal">@L["Normal"]</option>
+                                                                <option value="ExceptionPriority">@L["ExceptionPriority"]</option>
+                                                                <option value="ExceptionEmergency">@L["ExceptionEmergency"]</option>
+                                                            </InputSelect>
                                                         </div>
                                                         <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveLane(lane)">
                                                             <i class="bi bi-trash"></i>
@@ -461,18 +276,18 @@
                 <div class="card mb-4 border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-tag fs-5"></i>
-                        <span class="fw-bold">@T("workOrderType")</span>
+                        <span class="fw-bold">@L["workOrderType"]</span>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("workOrderType") *</label>
-                                <select class="form-select" @bind="model.Type">
-                                    <option value="">@T("selectType")</option>
-                                    <option value="Normal">@T("Normal")</option>
-                                    <option value="ExceptionPriority">@T("ExceptionPriority")</option>
-                                    <option value="ExceptionEmergency">@T("ExceptionEmergency")</option>
-                                </select>
+                                <label class="form-label fw-semibold small text-uppercase">@L["workOrderType"] *</label>
+                                <InputSelect class="form-select" @bind-Value="model.Type">
+                                    <option value="">@L["selectType"]</option>
+                                    <option value="Normal">@L["Normal"]</option>
+                                    <option value="ExceptionPriority">@L["ExceptionPriority"]</option>
+                                    <option value="ExceptionEmergency">@L["ExceptionEmergency"]</option>
+                                </InputSelect>
                                 <ValidationMessage For="() => model.Type" class="text-danger small" />
                             </div>
                         </div>
@@ -483,21 +298,21 @@
                 <div class="card mb-4 border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-calendar3 fs-5"></i>
-                        <span class="fw-bold">@T("orderDates")</span>
+                        <span class="fw-bold">@L["orderDates"]</span>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-uppercase">@T("workOrderDate") *</label>
-                                <input type="date" class="form-control" @bind="model.WorkOrderDate" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["workOrderDate"] *</label>
+                                <InputDate class="form-control" @bind-Value="model.WorkOrderDate" @bind-Value:format="yyyy-MM-dd" />
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-uppercase">@T("workOrderEndDate") *</label>
-                                <input type="date" class="form-control" @bind="model.WorkOrderEndDate" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["workOrderEndDate"] *</label>
+                                <InputDate class="form-control" @bind-Value="model.WorkOrderEndDate" @bind-Value:format="yyyy-MM-dd" />
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-uppercase">@T("workOrderRenewDate")</label>
-                                <input type="date" class="form-control" @bind="model.WorkOrderRenewDate" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["workOrderRenewDate"]</label>
+                                <InputDate class="form-control" @bind-Value="model.WorkOrderRenewDate" @bind-Value:format="yyyy-MM-dd" />
                             </div>
                         </div>
                     </div>
@@ -507,39 +322,39 @@
                 <div class="card mb-4 border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-folder2-open fs-5"></i>
-                        <span class="fw-bold">@T("projectInfo")</span>
+                        <span class="fw-bold">@L["projectInfo"]</span>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("assignTo") *</label>
-                                <select class="form-select" @bind="model.AssignTo">
-                                    <option value="">@T("selectType")</option>
+                                <label class="form-label fw-semibold small text-uppercase">@L["assignTo"] *</label>
+                                <InputSelect class="form-select" @bind-Value="model.AssignTo">
+                                    <option value="">@L["selectType"]</option>
                                     <option value="consultant-a">Consultant A</option>
                                     <option value="consultant-b">Consultant B</option>
                                     <option value="consultant-c">Consultant C</option>
-                                </select>
+                                </InputSelect>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("projectRef") *</label>
-                                <select class="form-select" @bind="model.ProjectRef">
-                                    <option value="">@T("selectType")</option>
+                                <label class="form-label fw-semibold small text-uppercase">@L["projectRef"] *</label>
+                                <InputSelect class="form-select" @bind-Value="model.ProjectRef">
+                                    <option value="">@L["selectType"]</option>
                                     <option value="road2025">Road Maintenance 2025</option>
                                     <option value="bridge2025">Bridge Repair 2025</option>
-                                </select>
+                                </InputSelect>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("contractNumber")</label>
-                                <input type="text" class="form-control" @bind="model.ContractNumber" placeholder="CNT-2025-001" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["contractNumber"]</label>
+                                <InputText class="form-control" @bind-Value="model.ContractNumber" placeholder="CNT-2025-001" />
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-uppercase">@T("siteLocation") *</label>
-                                <input type="text" class="form-control" @bind="model.SiteLocation" placeholder="Prince Mohammed Bin Abdulaziz St." />
+                                <label class="form-label fw-semibold small text-uppercase">@L["siteLocation"] *</label>
+                                <InputText class="form-control" @bind-Value="model.SiteLocation" placeholder="Prince Mohammed Bin Abdulaziz St." />
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold small text-uppercase">@T("workDuration") *</label>
-                                <input type="number" class="form-control" @bind="model.WorkDuration" placeholder="45" />
-                                <div class="form-text fst-italic">@T("durationHelp")</div>
+                                <label class="form-label fw-semibold small text-uppercase">@L["workDuration"] *</label>
+                                <InputNumber class="form-control" @bind-Value="model.WorkDuration" placeholder="45" />
+                                <div class="form-text fst-italic">@L["durationHelp"]</div>
                             </div>
                         </div>
                     </div>
@@ -549,21 +364,21 @@
                 <div class="card mb-4 border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-shield-check fs-5"></i>
-                        <span class="fw-bold">@T("warranty")</span>
+                        <span class="fw-bold">@L["warranty"]</span>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-uppercase">@T("yearsOfLife")</label>
-                                <input type="number" class="form-control" @bind="model.YearsOfLife" placeholder="2" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["yearsOfLife"]</label>
+                                <InputNumber class="form-control" @bind-Value="model.YearsOfLife" placeholder="2" />
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-uppercase">@T("warrantyStartDate")</label>
-                                <input type="date" class="form-control" @bind="model.WarrantyStartDate" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["warrantyStartDate"]</label>
+                                <InputDate class="form-control" @bind-Value="model.WarrantyStartDate" @bind-Value:format="yyyy-MM-dd" />
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-uppercase">@T("warrantyEndDate")</label>
-                                <input type="date" class="form-control" @bind="model.WarrantyEndDate" />
+                                <label class="form-label fw-semibold small text-uppercase">@L["warrantyEndDate"]</label>
+                                <InputDate class="form-control" @bind-Value="model.WarrantyEndDate" @bind-Value:format="yyyy-MM-dd" />
                             </div>
                         </div>
                     </div>
@@ -573,22 +388,24 @@
                 <div class="card mb-4 border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-info-square fs-5"></i>
-                        <span class="fw-bold">@T("additionalInfo")</span>
+                        <span class="fw-bold">@L["additionalInfo"]</span>
                     </div>
                     <div class="card-body p-4">
+
                         <!-- Equipment -->
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <label class="form-label fw-semibold mb-0">@T("equipment")</label>
+                                <label class="form-label fw-semibold mb-0">@L["equipment"]</label>
                                 <button type="button" class="btn btn-primary btn-sm" @onclick="AddEquipment">
-                                    <i class="bi bi-plus-circle me-1"></i> @T("addEquipment")
+                                    <i class="bi bi-plus-circle me-1"></i> @L["addEquipment"]
                                 </button>
                             </div>
+
                             @if (model.Equipment.Count == 0)
                             {
                                 <div class="text-center text-muted py-4 bg-body-secondary border rounded-2">
                                     <i class="bi bi-tools display-4 opacity-25"></i>
-                                    <p class="mt-2 mb-0 small">@T("noItems")</p>
+                                    <p class="mt-2 mb-0 small">@L["noItems"]</p>
                                 </div>
                             }
                             else
@@ -598,12 +415,12 @@
                                     {
                                         <div class="d-flex gap-2 p-3 bg-body-secondary border rounded-2 align-items-end">
                                             <div class="flex-grow-1">
-                                                <label class="form-label small fw-semibold text-muted">@T("equipmentName")</label>
-                                                <input type="text" class="form-control form-control-sm" @bind="eq.Name" placeholder='@T("equipmentName")' />
+                                                <label class="form-label small fw-semibold text-muted">@L["equipmentName"]</label>
+                                                <InputText class="form-control form-control-sm" @bind-Value="eq.Name" placeholder='@L["equipmentName"]' />
                                             </div>
                                             <div style="min-width: 120px;">
-                                                <label class="form-label small fw-semibold text-muted">@T("quantity")</label>
-                                                <input type="number" class="form-control form-control-sm" @bind="eq.Quantity" min="1" />
+                                                <label class="form-label small fw-semibold text-muted">@L["quantity"]</label>
+                                                <InputNumber class="form-control form-control-sm" @bind-Value="eq.Quantity" />
                                             </div>
                                             <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveEquipment(eq)">
                                                 <i class="bi bi-trash"></i>
@@ -617,16 +434,17 @@
                         <!-- Fixes -->
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <label class="form-label fw-semibold mb-0">@T("itemFix")</label>
+                                <label class="form-label fw-semibold mb-0">@L["itemFix"]</label>
                                 <button type="button" class="btn btn-primary btn-sm" @onclick="AddFix">
-                                    <i class="bi bi-plus-circle me-1"></i> @T("addFix")
+                                    <i class="bi bi-plus-circle me-1"></i> @L["addFix"]
                                 </button>
                             </div>
+
                             @if (model.Fixes.Count == 0)
                             {
                                 <div class="text-center text-muted py-4 bg-body-secondary border rounded-2">
                                     <i class="bi bi-gear display-4 opacity-25"></i>
-                                    <p class="mt-2 mb-0 small">@T("noItems")</p>
+                                    <p class="mt-2 mb-0 small">@L["noItems"]</p>
                                 </div>
                             }
                             else
@@ -636,12 +454,12 @@
                                     {
                                         <div class="d-flex gap-2 p-3 bg-body-secondary border rounded-2 align-items-end">
                                             <div style="min-width: 200px;">
-                                                <label class="form-label small fw-semibold text-muted">@T("fixName")</label>
-                                                <input type="text" class="form-control form-control-sm" @bind="fix.Name" placeholder='@T("fixName")' />
+                                                <label class="form-label small fw-semibold text-muted">@L["fixName"]</label>
+                                                <InputText class="form-control form-control-sm" @bind-Value="fix.Name" placeholder='@L["fixName"]' />
                                             </div>
                                             <div class="flex-grow-1">
-                                                <label class="form-label small fw-semibold text-muted">@T("fixDescription")</label>
-                                                <input type="text" class="form-control form-control-sm" @bind="fix.Description" placeholder='@T("fixDescription")' />
+                                                <label class="form-label small fw-semibold text-muted">@L["fixDescription"]</label>
+                                                <InputText class="form-control form-control-sm" @bind-Value="fix.Description" placeholder='@L["fixDescription"]' />
                                             </div>
                                             <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveFix(fix)">
                                                 <i class="bi bi-trash"></i>
@@ -654,68 +472,9 @@
 
                         <!-- Work Order Notes -->
                         <div>
-                            <label class="form-label fw-semibold small text-uppercase">@T("workOrderNotes")</label>
-                            <textarea class="form-control" rows="4" @bind="model.WorkOrderNotes" placeholder='@T("notesPlaceholder")'></textarea>
+                            <label class="form-label fw-semibold small text-uppercase">@L["workOrderNotes"]</label>
+                            <InputTextArea class="form-control" rows="4" @bind-Value="model.WorkOrderNotes" placeholder='@L["notesPlaceholder"]' />
                         </div>
-                    </div>
-                </div>
-
-                <!-- BOQ Items -->
-                <div class="card border shadow-sm">
-                    <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
-                        <i class="bi bi-list-check fs-5"></i>
-                        <span class="fw-bold">@T("boqItems")</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label class="form-label fw-semibold mb-0">@T("boqItems")</label>
-                            <button type="button" class="btn btn-primary btn-sm" @onclick="AddBoqItem">
-                                <i class="bi bi-plus-circle me-1"></i> @T("addBoqItem")
-                            </button>
-                        </div>
-                        @if (model.BoqItems.Count == 0)
-                        {
-                            <div class="text-center text-muted py-5">
-                                <i class="bi bi-inbox display-1 opacity-25"></i>
-                                <p class="mt-2">@T("noItems")</p>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="fw-semibold small text-uppercase">@T("itemDesc")</th>
-                                            <th class="fw-semibold small text-uppercase">@T("itemCode")</th>
-                                            <th class="fw-semibold small text-uppercase">@T("unit")</th>
-                                            <th class="fw-semibold small text-uppercase">@T("qty")</th>
-                                            <th class="fw-semibold small text-uppercase">@T("prevExec")</th>
-                                            <th class="fw-semibold small text-uppercase">@T("execQty")</th>
-                                            <th class="fw-semibold small text-uppercase">@T("actions")</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in model.BoqItems)
-                                        {
-                                            <tr>
-                                                <td><input type="text" class="form-control form-control-sm" @bind="item.Desc" placeholder='@T("itemDesc")' /></td>
-                                                <td><input type="text" class="form-control form-control-sm" @bind="item.Code" placeholder='@T("itemCode")' /></td>
-                                                <td><input type="text" class="form-control form-control-sm" @bind="item.Unit" placeholder="m²" /></td>
-                                                <td><input type="number" class="form-control form-control-sm" @bind="item.Qty" /></td>
-                                                <td><input type="number" class="form-control form-control-sm" @bind="item.PrevExec" /></td>
-                                                <td><input type="number" class="form-control form-control-sm" @bind="item.ExecQty" /></td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveBoqItem(item)">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
                     </div>
                 </div>
             </div>
@@ -726,66 +485,153 @@
                 <div class="card border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-paperclip fs-5"></i>
-                        <span class="fw-bold">@T("attachmentsTitle")</span>
+                        <span class="fw-bold">@L["attachmentsTitle"]</span>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-4">
+
+                            <!-- Project Plan -->
                             <div class="col-md-6">
                                 <div class="text-center p-4 bg-body-secondary border border-2 border-dashed rounded-3">
-                                    <!-- CHANGED: inline white -> .icon-badge -->
-                                    <div class="icon-badge d-flex justify-content-center align-items-center mb-3">
-                                        <i class="bi bi-file-earmark-pdf text-primary display-6"></i>
-                                    </div>
-                                    <label class="fw-semibold d-block mb-3">@T("projectPlan")</label>
-                                    <button type="button" class="btn btn-primary btn-sm w-100">
-                                        <i class="bi bi-upload me-1"></i> @T("selectFile")
-                                    </button>
+                                    <div class="mb-3"><i class="bi bi-file-earmark-pdf text-primary display-6"></i></div>
+                                    <label class="fw-semibold d-block mb-3">@L["projectPlan"]</label>
+
+                                    <InputFile id="file-projectplan" OnChange="OnProjectPlanSelected" accept=".pdf,application/pdf" style="display:none" />
+                                    @if (ProjectPlanFile is null)
+                                    {
+                                        <label class="btn btn-primary btn-sm w-100" for="file-projectplan">
+                                            <i class="bi bi-upload me-1"></i> @L["selectFile"]
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-between align-items-center bg-body border rounded p-2">
+                                            <div class="text-start">
+                                                <div class="fw-semibold text-truncate" style="max-width: 240px;">@ProjectPlanFile.Name</div>
+                                                <div class="small text-muted">@HumanSize(ProjectPlanFile.Size)</div>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => ProjectPlanFile = null">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                    }
                                 </div>
                             </div>
+
+                            <!-- Image Before -->
                             <div class="col-md-6">
                                 <div class="text-center p-4 bg-body-secondary border border-2 border-dashed rounded-3">
-                                    <div class="icon-badge d-flex justify-content-center align-items-center mb-3">
-                                        <i class="bi bi-file-earmark-image text-primary display-6"></i>
-                                    </div>
-                                    <label class="fw-semibold d-block mb-3">@T("imageBefore")</label>
-                                    <button type="button" class="btn btn-primary btn-sm w-100">
-                                        <i class="bi bi-upload me-1"></i> @T("selectFile")
-                                    </button>
+                                    <div class="mb-3"><i class="bi bi-file-earmark-image text-primary display-6"></i></div>
+                                    <label class="fw-semibold d-block mb-3">@L["imageBefore"]</label>
+
+                                    <InputFile id="file-imgbefore" OnChange="OnImageBeforeSelected" accept="image/*" style="display:none" />
+                                    @if (ImageBeforeFile is null)
+                                    {
+                                        <label class="btn btn-primary btn-sm w-100" for="file-imgbefore">
+                                            <i class="bi bi-upload me-1"></i> @L["selectFile"]
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-between align-items-center bg-body border rounded p-2">
+                                            <div class="text-start">
+                                                <div class="fw-semibold text-truncate" style="max-width: 240px;">@ImageBeforeFile.Name</div>
+                                                <div class="small text-muted">@HumanSize(ImageBeforeFile.Size)</div>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => ImageBeforeFile = null">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                    }
                                 </div>
                             </div>
+
+                            <!-- Image After -->
                             <div class="col-md-6">
                                 <div class="text-center p-4 bg-body-secondary border border-2 border-dashed rounded-3">
-                                    <div class="icon-badge d-flex justify-content-center align-items-center mb-3">
-                                        <i class="bi bi-file-earmark-image text-primary display-6"></i>
-                                    </div>
-                                    <label class="fw-semibold d-block mb-3">@T("imageAfter")</label>
-                                    <button type="button" class="btn btn-primary btn-sm w-100">
-                                        <i class="bi bi-upload me-1"></i> @T("selectFile")
-                                    </button>
+                                    <div class="mb-3"><i class="bi bi-file-earmark-image text-primary display-6"></i></div>
+                                    <label class="fw-semibold d-block mb-3">@L["imageAfter"]</label>
+
+                                    <InputFile id="file-imgafter" OnChange="OnImageAfterSelected" accept="image/*" style="display:none" />
+                                    @if (ImageAfterFile is null)
+                                    {
+                                        <label class="btn btn-primary btn-sm w-100" for="file-imgafter">
+                                            <i class="bi bi-upload me-1"></i> @L["selectFile"]
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-between align-items-center bg-body border rounded p-2">
+                                            <div class="text-start">
+                                                <div class="fw-semibold text-truncate" style="max-width: 240px;">@ImageAfterFile.Name</div>
+                                                <div class="small text-muted">@HumanSize(ImageAfterFile.Size)</div>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => ImageAfterFile = null">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                    }
                                 </div>
                             </div>
+
+                            <!-- Map Key -->
                             <div class="col-md-6">
                                 <div class="text-center p-4 bg-body-secondary border border-2 border-dashed rounded-3">
-                                    <div class="icon-badge d-flex justify-content-center align-items-center mb-3">
-                                        <i class="bi bi-map text-primary display-6"></i>
-                                    </div>
-                                    <label class="fw-semibold d-block mb-3">@T("mapKey")</label>
-                                    <button type="button" class="btn btn-primary btn-sm w-100">
-                                        <i class="bi bi-upload me-1"></i> @T("selectFile")
-                                    </button>
+                                    <div class="mb-3"><i class="bi bi-map text-primary display-6"></i></div>
+                                    <label class="fw-semibold d-block mb-3">@L["mapKey"]</label>
+
+                                    <InputFile id="file-mapkey" OnChange="OnMapKeySelected" accept=".png,.jpg,.jpeg,.pdf,image/*,application/pdf" style="display:none" />
+                                    @if (MapKeyFile is null)
+                                    {
+                                        <label class="btn btn-primary btn-sm w-100" for="file-mapkey">
+                                            <i class="bi bi-upload me-1"></i> @L["selectFile"]
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-between align-items-center bg-body border rounded p-2">
+                                            <div class="text-start">
+                                                <div class="fw-semibold text-truncate" style="max-width: 240px;">@MapKeyFile.Name</div>
+                                                <div class="small text-muted">@HumanSize(MapKeyFile.Size)</div>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => MapKeyFile = null">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                    }
                                 </div>
                             </div>
+
+                            <!-- Other Document -->
                             <div class="col-12">
                                 <div class="text-center p-4 bg-body-secondary border border-2 border-dashed rounded-3">
-                                    <div class="icon-badge d-flex justify-content-center align-items-center mb-3">
-                                        <i class="bi bi-file-earmark text-primary display-6"></i>
-                                    </div>
-                                    <label class="fw-semibold d-block mb-3">@T("otherDoc")</label>
-                                    <button type="button" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-upload me-1"></i> @T("selectFile")
-                                    </button>
+                                    <div class="mb-3"><i class="bi bi-file-earmark text-primary display-6"></i></div>
+                                    <label class="fw-semibold d-block mb-3">@L["otherDoc"]</label>
+
+                                    <InputFile id="file-otherdoc" OnChange="OnOtherDocSelected" accept="*/*" style="display:none" />
+                                    @if (OtherDocFile is null)
+                                    {
+                                        <label class="btn btn-primary btn-sm" for="file-otherdoc">
+                                            <i class="bi bi-upload me-1"></i> @L["selectFile"]
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-center">
+                                            <div class="d-flex justify-content-between align-items-center bg-body border rounded p-2" style="max-width: 480px; width:100%;">
+                                                <div class="text-start">
+                                                    <div class="fw-semibold text-truncate" style="max-width: 340px;">@OtherDocFile.Name</div>
+                                                    <div class="small text-muted">@HumanSize(OtherDocFile.Size)</div>
+                                                </div>
+                                                <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => OtherDocFile = null">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -797,16 +643,29 @@
                 <div class="card border shadow-sm">
                     <div class="card-header bg-primary-subtle d-flex align-items-center gap-2">
                         <i class="bi bi-clock-history fs-5"></i>
-                        <span class="fw-bold">@T("workflowHistoryTitle")</span>
+                        <span class="fw-bold">@L["workflowHistoryTitle"]</span>
                     </div>
                     <div class="card-body p-4">
                         <div class="text-center text-muted py-5">
                             <i class="bi bi-inbox display-1 opacity-25"></i>
-                            <p class="mt-2">@T("noHistory")</p>
+                            <p class="mt-2">@L["noHistory"]</p>
                         </div>
                     </div>
                 </div>
             </div>
         }
+
+        <!-- Bottom actions -->
+        <div class="mt-4 d-flex justify-content-end gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1"></i> @L["saveClose"]
+            </button>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle me-1"></i> @L["saveKeep"]
+            </button>
+            <button type="button" class="btn btn-danger">
+                <i class="bi bi-trash me-1"></i> @L["delete"]
+            </button>
+        </div>
     </EditForm>
 </div>

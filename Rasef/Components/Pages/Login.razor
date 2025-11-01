@@ -20,6 +20,7 @@
     <div class="container position-relative" style="z-index: 2;">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
                 <!-- Login Card -->
                 <div class="login-card animate-fade-in">
                     <div class="card-glow"></div>
@@ -46,13 +47,22 @@
                         <!-- Login Button -->
                         <div class="d-grid gap-3 mb-3">
                             <button class="btn-primary-custom btn-lg py-3 rounded-3 fw-bold border-0"
-                                    @onclick="OnLoginClick">
-                                <span class="btn-content"> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
-                                        <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
-                                        <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
-                                    </svg>
-                                     تسجيل الدخول عبر النفاذ الوطني  
+                                    @onclick="OnLoginClick"
+                                    disabled="@isNavigating">
+                                <span class="btn-content">
+                                    @if (isNavigating)
+                                    {
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        <span>جاري التحميل...</span>
+                                    }
+                                    else
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                                            <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
+                                            <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                                        </svg>
+                                        <span>تسجيل الدخول عبر النفاذ الوطني</span>
+                                    }
                                 </span>
                                 <div class="btn-shimmer"></div>
                             </button>
@@ -68,13 +78,18 @@
                         <!-- Exit Button -->
                         <div class="d-grid">
                             <button class="btn-exit-custom btn-lg py-3 rounded-3 fw-bold"
-                                    @onclick="Exit">
+                                    @onclick="Exit"
+                                    disabled="@isExiting">
                                 <span class="btn-content">
-                                    @* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
-                                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
-                                    </svg> *@
-                                      الخروج من الخدمة
+                                    @if (isExiting)
+                                    {
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        <span>جاري الخروج...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>الخروج من الخدمة</span>
+                                    }
                                 </span>
                             </button>
                         </div>
@@ -90,6 +105,7 @@
                         @DateTime.Now.Year وزارة النقل والخدمات اللوجستية
                     </p>
                 </div>
+
             </div>
         </div>
     </div>
@@ -97,390 +113,36 @@
     <!-- Decorative Elements -->
     <div class="position-absolute bottom-0 start-0 w-100" style="z-index: 1;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" style="display: block;">
-            <path fill="rgba(255, 255, 255, 0.05)" fill-opacity="1" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>
+            <path fill="rgba(255, 255, 255, 0.05)" fill-opacity="1"
+                  d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z">
+            </path>
         </svg>
-    </div>
-
-    <!-- Floating Particles -->
-    <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
     </div>
 </div>
 
-<style>
-    /* Animations */
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(40px) scale(0.95);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-
-    @@keyframes fadeInDelay {
-        from {
-            opacity: 0;
-        }
-
-        to {
-            opacity: 1;
-        }
-    }
-
-    @@keyframes glow {
-        0%, 100% {
-            opacity: 0.5;
-            transform: scale(1);
-        }
-
-        50% {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-    }
-
-    @@keyframes shimmer {
-        0% {
-            left: -100%;
-        }
-
-        100% {
-            left: 200%;
-        }
-    }
-
-    @@keyframes shine {
-        0% {
-            transform: translateX(-100%) rotate(45deg);
-        }
-
-        100% {
-            transform: translateX(200%) rotate(45deg);
-        }
-    }
-
-    @@keyframes float {
-        0%, 100% {
-            transform: translateY(0px);
-        }
-
-        50% {
-            transform: translateY(-20px);
-        }
-    }
-
-    @@keyframes particle {
-        0% {
-            transform: translateY(0) translateX(0) scale(0);
-            opacity: 0;
-        }
-
-        50% {
-            opacity: 1;
-        }
-
-        100% {
-            transform: translateY(-100vh) translateX(100px) scale(1);
-            opacity: 0;
-        }
-    }
-
-    /* Card Styling */
-    .login-card {
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 24px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-        position: relative;
-        overflow: hidden;
-        animation: fadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .card-glow {
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(52, 152, 219, 0.15) 0%, transparent 70%);
-        animation: glow 4s ease-in-out infinite;
-        pointer-events: none;
-    }
-
-    /* Logo Styling */
-    .logo-wrapper {
-        position: relative;
-        display: inline-block;
-        animation: float 3s ease-in-out ;
-    }
-
-    .logo-circle {
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
-        border-radius: 50%;
-        padding: 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .logo-img {
-        max-width: 150px;
-        height: auto;
-        display: block;
-        position: relative;
-        z-index: 2;
-    }
-
-    .logo-shine {
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 50%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-        /* animation: shine 3s ease-in-out infinite; */
-    }
-
-    /* Title Styling */
-    .login-title {
-        font-size: 2rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        letter-spacing: -0.5px;
-    }
-
-    .login-subtitle {
-        color: #7f8c8d;
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-
-    /* Primary Button */
-    .btn-primary-custom {
-        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-        color: white;
-        border: none;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
-    }
-
-        .btn-primary-custom:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
-        }
-
-        .btn-primary-custom:active {
-            transform: translateY(-1px);
-        }
-
-    .btn-shimmer {
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 50%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        animation: shimmer 3s infinite;
-    }
-
-    .btn-primary-custom:hover .btn-shimmer {
-        animation: shimmer 1.5s infinite;
-    }
-
-    /* Exit Button */
-    .btn-exit-custom {
-        background: transparent;
-        color: #e74c3c;
-        border: 2px solid #e74c3c;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-        .btn-exit-custom::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: #e74c3c;
-            transition: left 0.4s ease;
-            z-index: 0;
-        }
-
-        .btn-exit-custom:hover::before {
-            left: 0;
-        }
-
-        .btn-exit-custom:hover {
-            color: white;
-            border-color: #e74c3c;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
-        }
-
-        .btn-exit-custom:active {
-            transform: translateY(-1px);
-        }
-
-    .btn-content {
-        position: relative;
-        z-index: 1;
-        display: inline-flex;
-        align-items: center;
-    }
-
-    /* Divider */
-    .divider-wrapper {
-        display: flex;
-        align-items: center;
-        margin: 2rem 0;
-    }
-
-    .divider-line {
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
-    }
-
-    .divider-text {
-        padding: 0 1.5rem;
-        color: #95a5a6;
-        font-size: 0.9rem;
-        font-weight: 600;
-        position: relative;
-    }
-
-        .divider-text::before,
-        .divider-text::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #bdc3c7;
-            transform: translateY(-50%);
-        }
-
-        .divider-text::before {
-            left: 0;
-        }
-
-        .divider-text::after {
-            right: 0;
-        }
-
-    /* Footer */
-    .footer-text {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Animations */
-    .animate-fade-in {
-        animation: fadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .animate-fade-in-delay {
-        animation: fadeInDelay 1s ease-out 0.4s both;
-    }
-
-    /* Floating Particles */
-    .particles {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .particle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: rgba(255, 255, 255, 0.6);
-        border-radius: 50%;
-        animation: particle 15s linear infinite;
-    }
-
-        .particle:nth-child(1) {
-            left: 10%;
-            animation-delay: 0s;
-            animation-duration: 12s;
-        }
-
-        .particle:nth-child(2) {
-            left: 30%;
-            animation-delay: 3s;
-            animation-duration: 15s;
-        }
-
-        .particle:nth-child(3) {
-            left: 50%;
-            animation-delay: 6s;
-            animation-duration: 18s;
-        }
-
-        .particle:nth-child(4) {
-            left: 70%;
-            animation-delay: 9s;
-            animation-duration: 14s;
-        }
-
-        .particle:nth-child(5) {
-            left: 90%;
-            animation-delay: 12s;
-            animation-duration: 16s;
-        }
-
-    /* Responsive */
-    @@media (max-width: 576px) {
-        .login-card {
-            border-radius: 20px;
-        }
-
-        .login-title {
-            font-size: 1.75rem;
-        }
-
-        .logo-img {
-            max-width: 120px;
-        }
-
-        .logo-circle {
-            padding: 1.25rem;
-        }
-    }
-</style>
-
 @code {
-    private void OnLoginClick() => Nav.NavigateTo("/home");
+    private bool isNavigating = false;
+    private bool isExiting = false;
+
+    private void OnLoginClick()
+    {
+        if (isNavigating) return;
+        isNavigating = true;
+
+        // Navigate to home
+        Nav.NavigateTo("/home", forceLoad: false);
+    }
 
     private void Exit()
     {
-#if ANDROID || IOS || MACCATALYST || WINDOWS
-        Application.Current?.Quit();
-#endif
+        if (isExiting) return;
+        isExiting = true;
+
+        // For MAUI apps
+        var app = Application.Current;
+        if (app != null)
+        {
+            app.Quit();
+        }
     }
 }

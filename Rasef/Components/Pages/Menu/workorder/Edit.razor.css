@@ -1,0 +1,50 @@
+/* Buttons & icons alignment (crisper icons in labels/buttons) */
+.btn .bi {
+    vertical-align: -0.125em;
+}
+
+/* Stronger button feedback (subtle, consistent with your app) */
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.08);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+}
+
+/* Form labels */
+.form-label.small {
+    letter-spacing: .1px;
+}
+
+/* Disabled controls readable in both themes */
+.form-control:disabled,
+.form-select:disabled,
+textarea:disabled {
+    background-color: var(--bs-tertiary-bg, #f1f3f5);
+    color: var(--bs-body-color);
+    opacity: 1; /* keep text legible */
+}
+
+/* Textarea UX */
+textarea.form-control {
+    resize: vertical;
+}
+
+/* Card footer surface matches theme */
+.card-footer {
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+}
+
+/* Responsive: stack footer buttons on very small screens */
+@media (max-width: 576px) {
+    .card-footer {
+        gap: .5rem;
+        flex-wrap: wrap;
+    }
+
+        .card-footer .btn {
+            flex: 1 1 100%;
+        }
+}

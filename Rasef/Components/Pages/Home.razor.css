@@ -1,0 +1,95 @@
+/* =======================
+   Home (Home.razor.css)
+   ======================= */
+
+/* Hero */
+.hero-section {
+    height: 400px;
+    margin: 0 !important;
+}
+
+.hero-bg {
+    background-image: url('/css/img/jeddahcropped.JPG');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hero-overlay {
+    background: linear-gradient(135deg, rgba(44,62,80,.5) 0%, rgba(52,152,219,.75) 100%);
+}
+
+/* Blend wave with current theme background (light + dark) */
+.wave-path {
+    fill: var(--bs-body-bg);
+}
+
+/* Reduce gap after hero */
+.hero-section + .container-fluid {
+    padding-top: 2rem;
+}
+
+/* Icons */
+.icon-xl {
+    font-size: 2.5rem;
+}
+
+.icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 1rem;
+}
+
+.grad-blue {
+    background: linear-gradient(135deg,#3498db 0%,#2980b9 100%);
+}
+
+.grad-green {
+    background: linear-gradient(135deg,#27ae60 0%,#229954 100%);
+}
+
+.grad-orange {
+    background: linear-gradient(135deg,#e67e22 0%,#d35400 100%);
+}
+
+.grad-purple {
+    background: linear-gradient(135deg,#8e44ad 0%,#6c3483 100%);
+}
+
+/* Card hover animation */
+.home-card {
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+    .home-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.15) !important;
+    }
+
+/* Title color that works in both themes */
+.text-slate {
+    color: #2c3e50;
+}
+
+[data-bs-theme="dark"] .text-slate {
+    color: #e6edf3;
+}
+
+/* Fade-in animation (hero text) */
+@keyframes fadeInHome {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeInHome .8s ease-out;
+}
